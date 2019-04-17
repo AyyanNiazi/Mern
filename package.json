@@ -4,12 +4,15 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "client-install": "npm install --prefix client",
     "start": "node server.js",
-    "server": "nodemon server.js"
+    "server": "nodemon server.js",
+    "client": "cd client && cd mern && npm start",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AyyanNiazi/Mern.git"
+    "url": "git+https://github.com/AyyanNiazi/Mern-App.git"
   },
   "author": "\"ayyan\"",
   "license": "ISC",
