@@ -46,3 +46,9 @@ router.post("/register", (req,res) => {
 
     })
 })
+
+
+
+//login route
+
+router.post("/login", (req))
