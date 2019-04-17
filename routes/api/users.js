@@ -51,4 +51,58 @@ router.post("/register", (req,res) => {
 
 //login route
 
-router.post("/login", (req))
+router.post("/login", (req,res) => {
+
+    const {errors, isValid} = validateRegisterInput(req.body);
+
+    //validations 
+    if(!isValid) {
+        return res.status(400).json(errors)
+    }
+    const email = req.body.email;
+    const password = req.body.password;
+
+    //user find by email
+    User.findOne({email }).then(user => {
+        //either user exist or not check it
+        if(!user){
+            return res.status(400).json({emailnotfound: "email not found" })
+        }
+
+        //check password
+        bcrypt.compare(password, user.password).then(isMatch => {
+            if(isMatch){
+                //user found now create jwt payload
+                const payload = {
+                    id: user.id,
+                    name: user.name
+                }
+
+                //sign token
+                jwt.sign(
+                    payload,
+                    keys.secretOrKey,
+                    {
+                        expiresIn: 31556926 // this number is year in seconds
+                    },
+                    (err,token) => {
+                        res.json({
+                            success: true,
+                            token: "Bearer" + token
+                        });
+
+                    }
+                );
+            }
+            else{
+                return res
+                .status(400)
+                .json({passwordincorrect: "password incorrect "});
+
+            }
+        })
+    })
+})
+
+
+module.exports = router;
