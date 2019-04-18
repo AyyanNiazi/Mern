@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input,CardHeader, Container, Row, Col, Card, FormText } from 'reactstrap';
 import {connect} from 'react-redux';
-import registerUser from '../../store/action/authAction';
+import {registerUser} from '../../store/action/authAction';
 
 import './login.css'
 
@@ -31,6 +31,8 @@ class Register extends Component {
             pass,
             pass2
         }
+
+        this.props.registerUser(newUser);
         this.setState({
             name: '',
             email: '',
@@ -90,4 +92,13 @@ class Register extends Component {
     }
 }
 
-export default Register;
+//redux
+const mapDispatchToProps = dispatch => {
+    return {
+        registerUser: userData => {
+            dispatch(registerUser(userData))
+        }
+    }
+}
+
+export default connect(null,mapDispatchToProps)(Register);

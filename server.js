@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+// const proxy = require('http-proxy-middleware');
 const passport = require("passport");
 const users = require("./routes/api/users")
 const app = express();
@@ -38,7 +39,7 @@ app.use(passport.initialize());
 require("./config/passport");
 
 //routes
-app.use("/api/users", users)
+app.use('/api/users',  users )
 
 //server seetings
 const port = process.env.PORT || 5000

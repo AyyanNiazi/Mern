@@ -5,19 +5,21 @@ import jwt_decode from "jwt-decode";
 
 
 //REGISTER
-export const registerUser = (userData, history) => {
+export const registerUser = (userData, history) => 
     dispatch => {
-        axios.post("/api/users/register", userData)
+        axios.post("http://localhost:5000/api/users/register", userData)
         .then(res => history.push("/login"))
-        .catch(err => dispatch({
+        .catch(err => {dispatch({
             type: actionTypes.GET_ERRORS,
             payload: err.response.data
-        }))
+        })
+            console.log("error")
+    })
     }
-}
+
 
 //get user token for future uses
-export const loginuser = userData => {
+export const loginuser = userData => 
     dispatch => {
         axios.post("/api/users/register", userData)
         .then(res => {
@@ -26,14 +28,14 @@ export const loginuser = userData => {
             //token for auth header
             setAuthToken(token)
             //decoding encrypted token which we send from server 
-            const decode = jwt_decode(token);
+            const decoded = jwt_decode(token);
             dispatch(setCurrentUser(decoded));
         }).catch(err => dispatch({
             type: actionTypes.GET_ERRORS,
             payload: err.response.data,
         }))
     }
-}
+
 
 //Loggedin user
 export const setCurrentUser = decoded => {
@@ -46,16 +48,15 @@ export const setCurrentUser = decoded => {
 //loading
 export const userloading = () => {
     return {
-        type: actiontypes.userloading,
+        type: actionTypes.userloading,
 
     }
 }
 
 //Loggedout
-export const logout = () => {
+export const logout = () => 
     dispatch => {
         localStorage.removeItem("jwtToken");
         setAuthToken(false) //this will break action for future uses
         dispatch(setCurrentUser({}))
     }
-}
