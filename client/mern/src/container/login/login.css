@@ -1,0 +1,14 @@
+.card-body{
+    margin-top: 14vh;
+}
+
+.button{
+    float: right;
+    size: 14vw;
+}
+
+.card-head{
+    text-align: center;
+    font-size: 1.562em;
+    margin-bottom: 2vh;
+}

@@ -5,6 +5,7 @@ import Header from '../component/header';
 import Landing from '../component/landing';
 import Register from './login/register'
 import Login from './login/login'
+
 class Routes extends Component {
     constructor(props) {
         super(props);
@@ -13,7 +14,7 @@ class Routes extends Component {
     }
     render() { 
         return ( 
-            <div>
+            <React.Fragment>
                 <Router>
                     <Header />
                     <Switch> 
@@ -22,7 +23,7 @@ class Routes extends Component {
                         <Route exact path='/register' component={Register}  />
                     </Switch>
                 </Router>
-            </div>
+            </React.Fragment>
          );
     }
 }
