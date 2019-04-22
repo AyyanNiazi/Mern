@@ -1,10 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-// const proxy = require('http-proxy-middleware');
 const passport = require("passport");
 const cors = require("cors");
-// const users = require("./routes/api/users")
 const config = require('config');
 const app = express();
 app.use(cors())
@@ -42,6 +40,7 @@ app.use(passport.initialize());
 require("./config/passport");
 
 //routes
+
 app.use('/api/users/register',  require("./routes/api/register") )
 app.use('/api/users/login',  require("./routes/api/login") )
 

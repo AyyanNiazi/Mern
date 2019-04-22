@@ -3,27 +3,50 @@ import {actionTypes} from '../action/actionTypes'
 import isempty from 'is-empty'
 
 const initialState = {
-    isAuth: false || undefined ,
+    token: localStorage.getItem('token'),
+    isAuth: null ,
     loading: false,
-    user : {},
+    user : null,
 }
 
-export default function authReducer(state = initialState, action){
+export default function (state = initialState, action){
 
     switch(action.type){
-        case actionTypes.SET_CURRENT_USER :
-                return {
-                    ...state,
-                    isAuth: !isempty(action.payload),
-                    user: action.payload,
-                }
         case actionTypes.USER_LOADING : 
+        return {
+            ...state,
+            loading: true
+        }
+        case actionTypes.USER_LOADED :
                 return {
                     ...state,
-                    loading: true
+                    isAuth: true,
+                    user: action.payload,
+                    isLoading: false,
                 }
-        case actionTypes.GET_ERRORS :
-                return action.payload;
+        case actionTypes.LOGIN_SUCCES: 
+
+        case actionTypes.REGISTER_SUCCES:
+             return {
+            ...state,
+            ...action.payload,
+            isAuth: true,
+            isLoading: false,
+        }
+       
+        case actionTypes.AUTH_ERRORS :
+        case actionTypes.LOGIN_FAIL :
+        case actionTypes.LOGOUT_SUCCES :
+        case actionTypes.REGISTER_FAIL : //  this action represebnts all above 3 actions also
+        //remove token from localstorage
+        localStorage.removeItem('token');
+            return {
+                ...state,
+                token: null,
+                user: null,
+                isAuth: false,
+                isLoading: false
+            }
 
         default: return state
     }

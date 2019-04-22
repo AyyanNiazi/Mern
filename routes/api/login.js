@@ -2,28 +2,23 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const keys = require("../../config/keys");
 const config = require('config');
+const auth = require("../../customMiddleware/auth")
 //get input validation
-const validateRegisterInput = require('../../validation/register');
-const validateLoginInput = require('../../validation/login');
 
 //get user model
 const User = require('../../models/User');
 
 
-
-
-
 //login route
 
-router.post("/login", (req,res) => {
+router.post("/", (req,res) => {
 
     const {email,password} = req.body;
 
     //validations 
-    if(!name || !password) {
-        return res.status(400).json({message: "User didn't found"});
+    if(!email || !password) {
+        return res.status(400).json({msg: "User didn't found"});
     }
     // const email = email;
     // const password = password;
@@ -86,5 +81,11 @@ router.post("/login", (req,res) => {
     })
 })
 
+//user 
+router.get('/user', auth, (req,res) => {
+    User.findById(req.user.id).select("-password")
+    .then(user => res.json(user))
+    .catch(e => res.status(400).json({msg: "failed finding user by token"}))
+})
 
 module.exports = router;

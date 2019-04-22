@@ -3,22 +3,20 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require('config');
-//get input validation
-// const validateRegisterInput = require('../../validation/register');
-// const validateLoginInput = require('../../validation/login');
+
 
 //get user model
 const User = require('../../models/User');
 
-router.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-  });
+// router.use(function(req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     next();
+//   });
   
-router.post("/register", (req,res) => {
+router.post("/", (req,res) => {
     //form validation
-    const {errors, isValid,name,email,password} = req.body;
+    const {name,email,password} = req.body;
     
     //check validation others
     if( !name || !email || !password){
