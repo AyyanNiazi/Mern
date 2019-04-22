@@ -8,20 +8,22 @@ import jwt_decode from "jwt-decode";
 export const registerUser = (userData, history) => 
     dispatch => {
         axios.post("http://localhost:5000/api/users/register", userData)
-        .then(res => history.push("/login"))
+        .then(res => {
+            history.push('/login');
+            console.log("success", res)
+        })
         .catch(err => {dispatch({
             type: actionTypes.GET_ERRORS,
             payload: err.response.data
         })
-            console.log("error")
+            console.log("user data", err)
     })
     }
 
 
 //get user token for future uses
-export const loginuser = userData => 
-    dispatch => {
-        axios.post("/api/users/register", userData)
+export const loginuser = userData =>  dispatch => {
+        axios.post("http://localhost:5000/api/users/register", userData)
         .then(res => {
             const {token} = res.data;
             localStorage.setItem("jwtToken: ", token);
@@ -30,6 +32,8 @@ export const loginuser = userData =>
             //decoding encrypted token which we send from server 
             const decoded = jwt_decode(token);
             dispatch(setCurrentUser(decoded));
+            console.log("success")
+            this.props.history.push('/register')
         }).catch(err => dispatch({
             type: actionTypes.GET_ERRORS,
             payload: err.response.data,

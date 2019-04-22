@@ -1,0 +1,81 @@
+const express = require("express");
+const router = express.Router();
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const config = require('config');
+//get input validation
+// const validateRegisterInput = require('../../validation/register');
+// const validateLoginInput = require('../../validation/login');
+
+//get user model
+const User = require('../../models/User');
+
+router.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+  
+router.post("/register", (req,res) => {
+    //form validation
+    const {errors, isValid,name,email,password} = req.body;
+    
+    //check validation others
+    if( !name || !email || !password){
+         return res.status(400).json(errors)
+          
+          //res.status(400).json({msg: "enter all field"})
+    }
+
+    User.findOne({ email: email}).then((user) => {
+        if(user){ //user exist already if
+            return res.status(400).json({email: "Email already exist "})
+        }
+
+        const newUser = new User({
+            name,
+            email,
+            password,
+
+        });
+
+        // Password hashes for encrypting pass
+        bcrypt.genSalt(10, (err, salt) => { //here 10 represnt how hash should be long
+            bcrypt.hash(newUser.password, salt, (err, hash) => { //bcrypt.hash get plain pasword
+                if (err) throw err;
+                newUser.password = hash;
+                newUser.save()
+                .then(user => { 
+
+                   jwt.sign( //its need three things for complete its signature on the behalf of jwt
+                       {id: user.id,}, //here is 
+                       config.get('secretOrKey'),// here is ecret key
+                       {expiresIn: 3600},// here is time when token will expires
+                        (err,token) => {
+                            if(err) throw err;
+                            res.json({
+                                token, // save user with special token which is verified with special sign
+                                user : {
+                                id:user.id,
+                                name: user.name,
+                                email: user.email,
+                        } })
+                        }    
+                   )
+                    
+            })
+                .catch(err => console.log("error raised from genrating hashes for new user users.js file: ", err))
+            })
+        })
+
+    })
+})
+
+
+
+//login route
+
+
+
+
+module.exports = router;

@@ -8,7 +8,7 @@ class Landing extends Component {
     render() { 
         return ( 
             <div>
-                Landing
+                Dashbaord
             </div>
          );
     }

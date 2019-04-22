@@ -5,10 +5,9 @@
   "main": "server.js",
   "scripts": {
     "client-install": "npm install --prefix client",
-    "start": "node server.js",
-    "server": "nodemon server.js",
+    "server": "nodemon server.js --ignore client ",
     "client": "cd client && cd mern && npm start",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently  \"npm run client\"  \"npm run server\""
   },
   "repository": {
     "type": "git",
@@ -24,6 +23,8 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "concurrently": "^4.1.0",
+    "config": "^3.1.0",
+    "cors": "^2.8.5",
     "express": "^4.16.4",
     "is-empty": "^1.2.0",
     "jsonwebtoken": "^8.5.1",
