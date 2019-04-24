@@ -1,5 +1,5 @@
 import {actionTypes} from './actionTypes';
-const axios = require("axios")
+const axios = require("axios");
 
 
 export const returnErrors = (msg,status,id=null) =>{
@@ -16,4 +16,5 @@ export const clearErros = () => {
         
     }
 }
-//
+
+

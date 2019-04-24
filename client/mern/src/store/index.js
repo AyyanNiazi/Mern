@@ -6,7 +6,7 @@ import rootReducer from './reducer/rootReducer'
 const middleware = [thunk]
 
 const store = createStore(
-    rootReducer,
+    rootReducer, /* preloadedState, */
     {},
     compose(
         applyMiddleware(...middleware),

@@ -4,6 +4,15 @@ const bodyParser = require("body-parser");
 const passport = require("passport");
 const cors = require("cors");
 const config = require('config');
+const register = require("./routes/api/register");
+const login = require("./routes/api/login");
+const newJob = require('./routes/api/newJob');
+const allJob = require('./routes/api/allJob')
+const allStudent = require('./routes/api/allStudent')
+const allCompany = require('./routes/api/allCompany');
+const deleteReq = require('./routes/api/delete');
+
+
 const app = express();
 app.use(cors())
 //body parser middleware
@@ -31,18 +40,28 @@ mongoose.connect(
         
     }
 ).then(() => console.log("mongo db succesfully connected"))
-.catch((err) => console.log("mongo db connection failed due to: ",err))
+.catch((err) => console.log("mongo db connection failed due to: ",err.message));
 
 //passport middleware
-app.use(passport.initialize());
+// app.use(passport.initialize());
 
 //passport config
-require("./config/passport");
+// require("./config/passport");
 
 //routes
 
-app.use('/api/users/register',  require("./routes/api/register") )
-app.use('/api/users/login',  require("./routes/api/login") )
+// app.post('/api/register',function(req,res,next){
+//     console.log(req.body);
+// })
+
+app.use('/api/register',  register )
+app.use('/api/login',  login )
+app.use('/api/newJob',  newJob );
+app.use('/api/alljob',  allJob );
+app.use('/api/allStudent',  allStudent );
+app.use('/api/allCompany',  allCompany );
+app.use('/api/admindel',  deleteReq );
+
 
 //server seetings
 const port = process.env.PORT || 5000

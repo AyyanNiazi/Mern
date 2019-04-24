@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input,CardHeader, Container, Row, Col, Card, FormText } from 'reactstrap';
 import {connect} from 'react-redux';
-import {withRouter} from 'react-router-dom'
+import {withRouter,Link} from 'react-router-dom'
+import PropTypes from'prop-types';
 import {registerUser} from '../../store/action/authAction';
+import {clearErros} from '../../store/action/errorAction';
 import classnames from 'classnames'
+import axios from 'axios'
 import './login.css'
 
 class Register extends Component {
@@ -14,8 +17,31 @@ class Register extends Component {
             email: '',
             pass: '',
             pass2: '',
-            errors: {}
+            errors: null,
+            selector:''
         }
+    }
+
+    componentDidUpdate(prevProps){
+        const {errors} = this.props; //this is coming from store reducer
+        if(errors !== prevProps.errors){
+            if(errors.id === 'REGISTER_FAIL'){
+                this.setState({
+                    errors:errors.msg.msg
+                })
+            }
+            else{
+                this.setState({
+                    errors:null
+                })
+            }
+        }
+    }
+    static propTypes = {
+        isAuth: PropTypes.bool,
+        errors: PropTypes.object.isRequired,
+        registerUser: PropTypes.func.isRequired,
+        clearErros: PropTypes.func.isRequired
     }
 
     onChange= (e) => {
@@ -28,26 +54,49 @@ class Register extends Component {
           });
         }
       }
-    onSubmit = (e) => {
-        const {name,pass,pass2,email} = this.state
+    onSubmit = e => {
+        const {name,pass,selector,email} = this.state
         e.preventDefault();
           //new user
+          if(selector === "student"){ 
         const newUser = {
             name,
             email,
             pass,
-            pass2
+            selector
+            // pass2
         }
-
-        this.props.registerUser(newUser, this.props.history);
-        this.setState({
-            name: '',
-            email: '',
-            pass: '',
-            pass2: '',
-        })
-
+      axios.post('/api/register',newUser)
+      .then(res => {console.log("register say", res.data.user.selector)
+        localStorage.setItem('token', res.data.token)
+    })
+      .catch(err => console.log("resgitr sy erro", err.message))        
+        
+        // this.props.registerUser(newUser);    
         console.log("new user from register: ", newUser)
+        
+    }
+    else if(selector === "company"){
+        const newUser = {
+            name,
+            email,
+            pass,
+            selector,
+            // pass2
+        }
+        this.props.registerUser(newUser, this.props.history);    
+        console.log("new user from register: ", newUser)
+        
+    }
+
+        // this.setState({
+        //     name: '',
+        //     email: '',
+        //     pass: '',
+        //     pass2: '',
+        // })
+
+        // console.log("new user from register: ", newUser)
     }
 
   
@@ -61,51 +110,55 @@ class Register extends Component {
                         <Col>
                             <Card body>
                                 <CardHeader className="card-head" >Register</CardHeader>
-                                <Form  noValidate onSubmit={(e) => this.onSubmit(e)} >
+                                <Form  noValidate onSubmit={ this.onSubmit} >
                                     <FormGroup>
                                         <Label for="name">Name</Label>
                                         <Input type="text" name="name" required
-                                        onChange={this.onChange} error={errors.name}
+                                        onChange={this.onChange} 
                                         value={name} id="name" placeholder="write your good Name" 
                                         className={classnames("", {
-                                            invalid: errors.name
+                                            // invalid: errors.name
                                           })} />
-                                            <span className="red-text">{errors.name}</span>
+                                            {/* <span className="red-text">{errors.name}</span> */}
                                     </FormGroup>
                                     <FormGroup>
                                         <Label for="email">Email</Label>
                                         <Input type="email" name="email" required
-                                        onChange={this.onChange} error={errors.email}
+                                        onChange={this.onChange} 
                                         value={email} id="email" placeholder="write a Email"
                                         className={classnames("", {
-                                            invalid: errors.email
+                                            // invalid: errors.email
                                           })} />
-                                     <span className="red-text">{errors.email}</span>
+                                     {/* <span className="red-text">{errors.email}</span> */}
 
                                     </FormGroup>
                                     <FormGroup>
                                         <Label for="pass">Password</Label>
                                         <Input type="password" name="password" required
-                                        onChange={this.onChange} error={errors.password} 
-                                        value={pass}  id="pass" placeholder="Password"
+                                         
+                                        value={pass} 
+                                        onChange={this.onChange} id="pass" placeholder="Password"
                                         className={classnames("", {
-                                            invalid: errors.password
+                                            // invalid: errors.password
                                           })} />
-                                              <span className="red-text">{errors.password}</span>
+                                              {/* <span className="red-text">{errors.password}</span> */}
                                     </FormGroup>
+                                  <select
+                                      value={this.state.selector}
+                                      onChange={(e) => this.setState({selector: e.target.value})}>
+
+                                        <option value="">User type</option>
+                                        <option value="student">student</option>
+                                        <option value="company">company</option>
+                                  </select>
+                                  
+                                    {/* {this.state.errors ? ("you entered wrong data" , this.state.errors ): null} */}
+                                    <Button color="danger" className="button text-left "><Link to='/login' >Login</Link></Button>
                                     <FormGroup>
-                                        <Label for="pass2">Confirm Password</Label>
-                                        <Input type="password" name="password" required
-                                        onChange={this.onChange} error={errors.password2}
-                                        value={pass2} id="pass2" placeholder="Confirm Password"
-                                        className={classnames("", {
-                                            invalid: errors.password2
-                                          })} />
-                                                          <span className="red-text">{errors.password2}</span>
+                                        <Button color="danger" type="submit" className=" button text-left" >Signup</Button>
                                     </FormGroup>
-                                    <FormGroup>
-                                        <Button color="danger" type="submit" className=" button text-right" >Signup</Button>
-                                    </FormGroup>
+                                  
+                                    
                                 </Form>
                             </Card >
                         </Col>
@@ -118,15 +171,8 @@ class Register extends Component {
 
 //redux
 const mapStateToProps = state => ({
-    auth: state.auth,
-    errors: state.errors
+    isAuth: state.authReducer.isAuth,
+    errors: state.errorReducer
   });
-const mapDispatchToProps = dispatch => {
-    return {
-        registerUser: userData => {
-            dispatch(registerUser(userData))
-        }
-    }
-}
 
 export default connect(mapStateToProps,{registerUser})(withRouter(Register));

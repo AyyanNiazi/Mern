@@ -15,23 +15,25 @@ const User = require('../../models/User');
 router.post("/", (req,res) => {
 
     const {email,password} = req.body;
-
+    console.log(email,password,"login sy uper wala")
     //validations 
     if(!email || !password) {
         return res.status(400).json({msg: "User didn't found"});
     }
     // const email = email;
-    // const password = password;
 
+    // const password = password;
+console.log(email,"login sy");
     //user find by email
     User.findOne({email }).then(user => {
         //either user exist or not check it
         if(!user){
             return res.status(400).json({emailnotfound: "email not found" })
         }
-
+        console.log(user)
         //check password
         bcrypt.compare(password, user.password).then(isMatch => { //here we compare coming data into existing data
+           console.log("login server sy ", User.password)
             if(isMatch){
 
                 jwt.sign( //its need three things for complete its signature on the behalf of jwt
@@ -82,10 +84,10 @@ router.post("/", (req,res) => {
 })
 
 //user 
-router.get('/user', auth, (req,res) => {
-    User.findById(req.user.id).select("-password")
-    .then(user => res.json(user))
-    .catch(e => res.status(400).json({msg: "failed finding user by token"}))
-})
+// router.get('/user', auth, (req,res) => {
+//     User.findById(req.user.id).select("-password")
+//     .then(user => res.json(user))
+//     .catch(e => res.status(400).json({msg: "failed finding user by token"}))
+// })
 
 module.exports = router;

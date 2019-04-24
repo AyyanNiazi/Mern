@@ -13,6 +13,7 @@ export const actionTypes = {
     REGISTER_FAIL :  "REGISTER_FAIL",
     GET_ERRORS: "GET_ERRORS",
     CLEAR_ERRORS: "CLEAR_ERRORS",
+    NEW_JOBS: "NEW_JOBS",
 }
 
  

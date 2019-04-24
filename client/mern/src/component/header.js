@@ -1,5 +1,7 @@
 import React,{Component} from 'react';
-import {Link} from 'react-router-dom'
+import {Link} from 'react-router-dom';
+import Logout from '../container/login/logout';
+
 import {
     Collapse,
     Navbar,
@@ -37,11 +39,21 @@ class Header extends Component {
                     <NavbarToggler onClick={this.toggle} />
                     <Collapse isOpen={this.state.isOpen} navbar>
                         <Nav className="ml-auto" navbar>
+                           
                             <NavItem>
-                                <NavLink> <Link to="/login" >  Signin  </Link></NavLink>
+                                <Logout />
                             </NavItem>
                             <NavItem>
-                            <NavLink> <Link to="/register" >  Signup </Link></NavLink>
+                                <NavLink> <Link to="/companyDashboard" >  company  </Link></NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink> <Link to="/studentDashboard" >  student  </Link></NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink> <Link to="/allJob" >  All Jobs  </Link></NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink> <Link to="/companies" >  AlCompanies  </Link></NavLink>
                             </NavItem>
                             <UncontrolledDropdown nav inNavbar>
                                 <DropdownToggle nav caret>

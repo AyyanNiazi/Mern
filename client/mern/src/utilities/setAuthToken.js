@@ -1,13 +1,13 @@
-import axios from 'axios';
+// import axios from 'axios';
 
-const setAuthToken = token => {
-    if(token) {
-        axios.defaults.headers.common["Authorization"] = token; //we place every time token = authorization with respect to user req
+// const setAuthToken = token => {
+//     if(token) {
+//         axios.defaults.headers.common["Authorization"] = token; //we place every time token = authorization with respect to user req
 
-    }
-    else{
-        delete axios.defaults.headers.common["Authorization"]
-    }
-}
+//     }
+//     else{
+//         delete axios.defaults.headers.common["Authorization"]
+//     }
+// }
 
-export default setAuthToken;
+// export default setAuthToken;
