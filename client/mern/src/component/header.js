@@ -14,6 +14,7 @@ import {
     DropdownToggle,
     DropdownMenu,
     DropdownItem } from 'reactstrap';
+import Axios from 'axios';
 
 
 class Header extends Component {
@@ -22,9 +23,32 @@ class Header extends Component {
     
         this.toggle = this.toggle.bind(this);
         this.state = {
-          isOpen: false
+          isOpen: false,
+          student:'',
+          companies: ''
         };
       }
+
+      componentDidMount(){
+          Axios.get('http://localhost:5000/api/allStudent')
+          .then(res => {
+                console.log("response headers sy", res.data)
+                const student = res.data.filter(e => {
+                        return e.userType === "student"
+                })
+                const company = res.data.filter(e => {
+                    return e.userType === "student"
+            })
+
+                this.setState({
+                    student,
+                    company
+                })
+          })
+          .catch(err => console.log("headers sy error", err.message))
+      }
+
+
       toggle() {
         this.setState({
           isOpen: !this.state.isOpen
@@ -43,18 +67,31 @@ class Header extends Component {
                             <NavItem>
                                 <Logout />
                             </NavItem>
-                            <NavItem>
+                            {this.state.student ?
+                            <div>
+                                 <NavItem>
                                 <NavLink> <Link to="/companyDashboard" >  company  </Link></NavLink>
                             </NavItem>
                             <NavItem>
+                                <NavLink> <Link to="/postedJob" >  Posted Jobs  </Link></NavLink>
+                            </NavItem>
+                            </div> : null
+                        }
+                         {this.state.company ?
+                         <div>
+                             <NavItem>
                                 <NavLink> <Link to="/studentDashboard" >  student  </Link></NavLink>
                             </NavItem>
                             <NavItem>
                                 <NavLink> <Link to="/allJob" >  All Jobs  </Link></NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink> <Link to="/companies" >  AlCompanies  </Link></NavLink>
+                                <NavLink> <Link to="/companies" >  All Companies  </Link></NavLink>
                             </NavItem>
+                         </div>
+                        :null}  
+                           
+                          
                             <UncontrolledDropdown nav inNavbar>
                                 <DropdownToggle nav caret>
                                       Options

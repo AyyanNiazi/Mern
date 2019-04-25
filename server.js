@@ -11,6 +11,7 @@ const allJob = require('./routes/api/allJob')
 const allStudent = require('./routes/api/allStudent')
 const allCompany = require('./routes/api/allCompany');
 const deleteReq = require('./routes/api/delete');
+const postedjob = require("./routes/api/postedJob");
 
 
 const app = express();
@@ -61,6 +62,7 @@ app.use('/api/alljob',  allJob );
 app.use('/api/allStudent',  allStudent );
 app.use('/api/allCompany',  allCompany );
 app.use('/api/admindel',  deleteReq );
+app.use('/api/postJob', postedjob)
 
 
 //server seetings

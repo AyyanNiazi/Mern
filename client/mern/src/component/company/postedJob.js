@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom';
 import {connect}  from 'react-redux'
 import axios from 'axios';
 
-class Companies extends Component {
+class PostedJob extends Component {
     constructor(props) {
         super(props);
         this.state = { 
@@ -14,47 +14,49 @@ class Companies extends Component {
     }
 
     componentDidMount(){
-        axios.get('http://localhost:5000/api/allCompany')
+        axios.get('http://localhost:5000/api/allStudent')
         .then(res => {
-            const company = res.data.filter(e => {
-                return e.userType === "company"
+            const student = res.data.filter(e => {
+                return e.userType === "student"
             })
             this.setState({
-                // studentData: student,
-                companyData: company
+                studentData: student,
             })
 
-            console.log(company,"company")
-            // const student = res.data.filter(e => {
-            //     return e.userType === "student"
-            // })
+         
 
            
-            // console.log("student",student);
+            console.log("student",student);
 
 
-            // let newArr = new Array();
-            // newArr.push(res.data)
-        
-            // this.setState({
-            //     companyData:newArr
-            // })
     })
         .catch(err => console.log("err job ka ui sy",err.message));
+    }
+
+    delete = id => {
+
+        axios.delete("/api/admindel",id)
+        .then(res => {
+            console.log("deleted", res);
+            const filter = res.data.filter(e => {
+                return e.id !== id
+            })
+        })
+        .catch(err => console.log("err from delkte", err.message))
     }
 
     render() { 
         return ( 
             <div>
-                 {this.state.companyData.map(elem => {
+                 {this.state.studentData.map(elem => {
                     
                     // return e.map(elem => {
                         return (
                             <div> 
-                                <li>shauhus</li>
                                 <li>{elem.name}</li>
                                 <li>{elem.email}</li>
                                 <li>{elem.userType}</li>
+                                <button  onClick={this.delete.bind(this,elem.id)} > Delete </button>
                             </div>
                         )
                     // })
@@ -76,4 +78,4 @@ const mapStateToProps = (state) => {
         // newJob
     }
 }
-export default connect(mapStateToProps,null)(Companies);
+export default connect(mapStateToProps,null)(PostedJob);

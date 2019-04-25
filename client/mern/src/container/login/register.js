@@ -54,6 +54,9 @@ class Register extends Component {
           });
         }
       }
+      componentDidMount(){
+          console.log(this.props)
+      }
     onSubmit = e => {
         const {name,pass,selector,email} = this.state
         e.preventDefault();
@@ -67,8 +70,12 @@ class Register extends Component {
             // pass2
         }
       axios.post('/api/register',newUser)
-      .then(res => {console.log("register say", res.data.user.selector)
-        localStorage.setItem('token', res.data.token)
+      .then(res => {console.log("register say", res.data.users.userType)
+        localStorage.setItem('token', res.data.token);
+
+        if(selector === "student") this.props.history.push("/studentDashboard")
+        if(selector === "company") this.props.history.push("/companyDashboard")
+       
     })
       .catch(err => console.log("resgitr sy erro", err.message))        
         

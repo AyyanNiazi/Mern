@@ -11,6 +11,7 @@ import Register from './login/register'
 import Login from './login/login'
 import PrivateRoute from './privateRoute'
 import CompanyDashboard from '../component/company/companyDashboard'
+import PostedJob from '../component/company/postedJob'
 import StudentDashboard from '../component/student/studentDashbaoard'
 import AllJobs from '../component/centralizeComponent/allJob'
 import AllStudent from '../component/admin/allStudent'
@@ -58,6 +59,7 @@ class Routes extends Component {
                         <Route exact path="/allStudent" component={AllStudent} />
                         <Route exact path="/allCompany" component={AllCompany} />
                         <Route exact path="/companies" component={Companies} />
+                        <Route exact path="/postedJob" component={PostedJob} />
                     </Switch>
                 </Router>
             </React.Fragment>
