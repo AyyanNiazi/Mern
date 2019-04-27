@@ -12,7 +12,8 @@ const allStudent = require('./routes/api/allStudent')
 const allCompany = require('./routes/api/allCompany');
 const deleteReq = require('./routes/api/delete');
 const postedjob = require("./routes/api/postedJob");
-
+const allPostJob = require('./routes/api/allPostJob')
+const forCompany = require('./routes/api/forCompany')
 
 const app = express();
 app.use(cors())
@@ -63,7 +64,10 @@ app.use('/api/allStudent',  allStudent );
 app.use('/api/allCompany',  allCompany );
 app.use('/api/admindel',  deleteReq );
 app.use('/api/postJob', postedjob)
+app.use('/api/allPostJob', allPostJob)
+app.use('/api/forCompany', forCompany)
 
+// app.use('/api/admindelPost', allPostJob)
 
 //server seetings
 const port = process.env.PORT || 5000

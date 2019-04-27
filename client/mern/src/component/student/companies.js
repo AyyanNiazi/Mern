@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
 import {Link} from 'react-router-dom';
 import {connect}  from 'react-redux'
+import {Jumbotron,Spinner} from 'reactstrap'
 import axios from 'axios';
 
 class Companies extends Component {
@@ -8,7 +9,8 @@ class Companies extends Component {
         super(props);
         this.state = { 
             companyData: [],
-            studentData: [],
+            // studentData: [],
+            loading: false
             
          }
     }
@@ -21,7 +23,8 @@ class Companies extends Component {
             })
             this.setState({
                 // studentData: student,
-                companyData: company
+                companyData: company,
+                loading:true
             })
 
             console.log(company,"company")
@@ -46,20 +49,25 @@ class Companies extends Component {
     render() { 
         return ( 
             <div>
-                 {this.state.companyData.map(elem => {
+                   {  this.state.loading === false ?
+                    <Spinner style={{marginLeft: "50%", marginTop: "25%"}} color='info' />
+                    :
+                    <div>
+                 {this.state.companyData.map((elem,index) => {
                     
                     // return e.map(elem => {
                         return (
-                            <div> 
-                                <li>shauhus</li>
-                                <li>{elem.name}</li>
-                                <li>{elem.email}</li>
-                                <li>{elem.userType}</li>
-                            </div>
+                            <Jumbotron>
+                            <p> Company:  {index+1}</p>
+                            <p> Company Name: {elem.name}</p>
+                            <p> Email:  {elem.email}</p>
+                            {/* <p> user Type:   {elem.userType}</p> */}
+                            {/* <Button color='danger' onClick={this.delete.bind(this, elem.email,)} > Delete </Button> */}
+                             </Jumbotron>
                         )
                     // })
                    
-                })} 
+                })}  </div>}
                 
                 
                    

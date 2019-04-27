@@ -5,17 +5,17 @@ import propTypes from 'prop-types'
 import { stat } from 'fs';
 
 
-const PrivateRoute = ({ component: Component, auth, ...rest}) => ( 
+const AdminRoute = ({ component: Component, auth, ...rest}) => ( 
     <Route 
         {...rest}
         render=
         
-        {props => auth.isAuth === true  ?
+        {props => auth.isAuth === true && auth.authUser.user === "admin" ?
           
         (
             <Component  {...props} />
         ):
-       
+      
         (<div> 
             <Redirect to='/login' />
             {alert("please login first")}
@@ -32,4 +32,4 @@ const mapStateToProps = (state) => {
     }
     }
 
-export default connect(mapStateToProps,null)(PrivateRoute);
+export default connect(mapStateToProps,null)(AdminRoute);

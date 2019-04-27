@@ -1,122 +1,202 @@
-import React,{Component} from 'react';
-import {Link} from 'react-router-dom';
-import Logout from '../container/login/logout';
+    import React,{Component} from 'react';
+    import {Link} from 'react-router-dom';
+    import Logout from '../container/login/logout';
+    import {connect} from 'react-redux'
+    import CompanyDashboard from './company/companyDashboard'
+    import {
+        Collapse,
+        Navbar,
+        NavbarToggler,
+        NavbarBrand,
+        Nav,
+        NavItem,
+        NavLink,
+        UncontrolledDropdown,
+        DropdownToggle,
+        DropdownMenu,
+        DropdownItem } from 'reactstrap';
+    import Axios from 'axios';
+    import { stat } from 'fs';
 
-import {
-    Collapse,
-    Navbar,
-    NavbarToggler,
-    NavbarBrand,
-    Nav,
-    NavItem,
-    NavLink,
-    UncontrolledDropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem } from 'reactstrap';
-import Axios from 'axios';
 
+    class Header extends Component {
+        constructor(props) {
+            super(props);
+        
+            this.toggle = this.toggle.bind(this);
+            this.state = {
+            isOpen: false,
+            student:'',
+            companies: ''
+            };
+        }
 
-class Header extends Component {
-    constructor(props) {
-        super(props);
-    
-        this.toggle = this.toggle.bind(this);
-        this.state = {
-          isOpen: false,
-          student:'',
-          companies: ''
-        };
-      }
-
-      componentDidMount(){
-          Axios.get('http://localhost:5000/api/allStudent')
-          .then(res => {
-                console.log("response headers sy", res.data)
-                const student = res.data.filter(e => {
+        componentDidMount(){
+            console.log(this.props)
+            Axios.get('http://localhost:5000/api/allStudent')
+            .then(res => {
+                    console.log("response headers sy", res.data)
+                    const student = res.data.filter(e => {
+                            return e.userType === "student"
+                    })
+                    const company = res.data.filter(e => {
                         return e.userType === "student"
                 })
-                const company = res.data.filter(e => {
-                    return e.userType === "student"
+
+                    this.setState({
+                        student,
+                        company
+                    })
             })
-
-                this.setState({
-                    student,
-                    company
-                })
-          })
-          .catch(err => console.log("headers sy error", err.message))
-      }
+            .catch(err => console.log("headers sy error", err.message))
+        }
 
 
-      toggle() {
-        this.setState({
-          isOpen: !this.state.isOpen
-        });
-      }
-    render(props) { 
-        const { classes } = this.props;
-        return ( 
-            <React.Fragment>
-                <Navbar color="light" light expand="md">
-                    <NavbarBrand href="/">Mern App</NavbarBrand>
-                    <NavbarToggler onClick={this.toggle} />
-                    <Collapse isOpen={this.state.isOpen} navbar>
-                        <Nav className="ml-auto" navbar>
-                           
-                            <NavItem>
-                                <Logout />
-                            </NavItem>
-                            {this.state.student ?
+        toggle() {
+            this.setState({
+            isOpen: !this.state.isOpen
+            });
+        }
+        render(props) { 
+            const { classes } = this.props;
+            return ( 
+                <React.Fragment>
+                    <Navbar color="light" light expand="md">
+                        <NavbarBrand href="/">Mern App</NavbarBrand>
+                        <NavbarToggler onClick={this.toggle} />
+                        <Collapse isOpen={this.state.isOpen} navbar>
+                            <Nav className="ml-auto" navbar>
+                            
+                            
+
+                                {this.props.auth.isAuth === true && this.props.auth.authUser.selector === "student"  ? 
+                                <div>
+                                     <UncontrolledDropdown nav inNavbar>
+                                    <DropdownToggle nav caret>
+                                        Welcome Student
+                                    </DropdownToggle>
+                                    <DropdownMenu right>
+                                        <DropdownItem>
+                                        <NavLink> <Link to="/allJob" >  All jobs  </Link></NavLink>
+                                        </DropdownItem>
+                                        <DropdownItem>
+                                        <NavLink> <Link to="/allCompany" >  Registered Companies  </Link></NavLink>
+                                        </DropdownItem>
+                                        <DropdownItem divider />
+                                        <DropdownItem>
+                                                <Logout />
+                                        </DropdownItem>
+                                    </DropdownMenu>
+                                </UncontrolledDropdown>
+                            </div> 
+                            : 
+                            this.props.auth.isAuth === true && this.props.auth.authUser.selector === "company"  ? 
                             <div>
-                                 <NavItem>
-                                <NavLink> <Link to="/companyDashboard" >  company  </Link></NavLink>
-                            </NavItem>
-                            <NavItem>
-                                <NavLink> <Link to="/postedJob" >  Posted Jobs  </Link></NavLink>
-                            </NavItem>
-                            </div> : null
-                        }
-                         {this.state.company ?
-                         <div>
-                             <NavItem>
-                                <NavLink> <Link to="/studentDashboard" >  student  </Link></NavLink>
-                            </NavItem>
-                            <NavItem>
-                                <NavLink> <Link to="/allJob" >  All Jobs  </Link></NavLink>
-                            </NavItem>
-                            <NavItem>
-                                <NavLink> <Link to="/companies" >  All Companies  </Link></NavLink>
-                            </NavItem>
-                         </div>
-                        :null}  
-                           
-                          
                             <UncontrolledDropdown nav inNavbar>
-                                <DropdownToggle nav caret>
-                                      Options
-                                </DropdownToggle>
-                                <DropdownMenu right>
-                                    <DropdownItem>
-                                        Option 1
-                                    </DropdownItem>
-                                    <DropdownItem>
-                                        Option 2
-                                    </DropdownItem>
-                                    <DropdownItem divider />
-                                    <DropdownItem>
-                                        Reset
-                                    </DropdownItem>
-                                </DropdownMenu>
-                            </UncontrolledDropdown>
-                        </Nav>
-                    </Collapse>
-                </Navbar>
-            </React.Fragment>
-         );
+                           <DropdownToggle nav caret>
+                               Welcome Comapny
+                           </DropdownToggle>
+                           <DropdownMenu right>
+                               <DropdownItem>
+                               <NavLink> <Link to="/allStudent" >  All Student  </Link></NavLink>
+                               </DropdownItem>
+                               <DropdownItem>
+                               <NavLink> <Link to="/postedJob" >  Students Apply for job  </Link></NavLink>
+                               </DropdownItem>
+                               <DropdownItem>
+                               <NavLink> <Link to="/companyDashboard" >  Post job  </Link></NavLink>
+                               </DropdownItem>
+                               <DropdownItem divider />
+                               <DropdownItem>
+                                       <Logout />
+                               </DropdownItem>
+                           </DropdownMenu>
+                       </UncontrolledDropdown>
+                   </div> :
+                    this.props.auth.isAuth === true && this.props.auth.authUser.user === "admin"  ? 
+                    <div>
+                    <UncontrolledDropdown nav inNavbar>
+                   <DropdownToggle nav caret>
+                       Welcome Admin
+                   </DropdownToggle>
+                   <DropdownMenu right>
+                       <DropdownItem>
+                       <NavLink> <Link to="/allStudent" >  All Student  </Link></NavLink>
+                       </DropdownItem>
+                       <DropdownItem>
+                       <NavLink> <Link to="/allCompany" >  All Companies  </Link></NavLink>
+                       </DropdownItem>
+                       <DropdownItem>
+                       <NavLink> <Link to="/postedJob" >  All  job  </Link></NavLink>
+                       </DropdownItem>
+                       <DropdownItem divider />
+                       <DropdownItem>
+                               <Logout />
+                       </DropdownItem>
+                   </DropdownMenu>
+               </UncontrolledDropdown>
+                    </div> :
+                            <div>
+                                    <UncontrolledDropdown nav inNavbar>
+                                    <DropdownToggle nav caret>
+                                        Authentication
+                                    </DropdownToggle>
+                                    <DropdownMenu right>
+                                        <DropdownItem>
+                                        <NavLink> <Link to="/login" >  Login  </Link></NavLink>
+                                        </DropdownItem>
+                                        <DropdownItem>
+                                        <NavLink> <Link to="/" >  Register  </Link></NavLink>
+                                        </DropdownItem>
+                                        <DropdownItem divider />
+                                        {/* <DropdownItem>
+                                            Reset
+                                        </DropdownItem> */}
+                                    </DropdownMenu>
+                                </UncontrolledDropdown>
+                                </div>
+                                    }
+                                {/* {this.state.student && this.props.student ?
+                                <div>
+                                    <NavItem>
+                                    <NavLink> <Link to="/companyDashboard" >  company  </Link></NavLink>
+                                </NavItem>
+                                <NavItem>
+                                    <NavLink> <Link to="/postedJob" >  Posted Jobs  </Link></NavLink>
+                                </NavItem>
+                                </div> : null
+                            }
+                            {this.state.company && this.props.company ?
+                            <div>
+                                <NavItem>
+                                    <NavLink> <Link to="/studentDashboard" >  student  </Link></NavLink>
+                                </NavItem>
+                                <NavItem>
+                                    <NavLink> <Link to="/allJob" >  All Jobs  </Link></NavLink>
+                                </NavItem>
+                                <NavItem>
+                                    <NavLink> <Link to="/companies" >  All Companies  </Link></NavLink>
+                                </NavItem>
+                            </div>
+                            :null}  
+                                */}
+
+                                
+                            </Nav>
+                        </Collapse>
+                    </Navbar>
+                </React.Fragment>
+            );
+        }
     }
-}
 
 
- 
-export default Header;
+    const mapstatetoprops = state => {
+        console.log(state.authReducer)
+        return {
+            auth: state.authReducer,
+            // user: state.authReducer
+        }
+    } 
+
+    export default connect(mapstatetoprops,null)(Header);

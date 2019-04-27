@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux'
+// import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+// import AllJobs from '../centralizeComponent/allJob'
 import { newJob } from '../../store/action/companyAction'
-import classnames from 'classnames'
+// import classnames from 'classnames'
 import {
-    Button, Form, FormGroup, Label, Input, CardHeader, Card,
-    Modal, ModalHeader, ModalBody, ModalFooter
+    // Button, Form, FormGroup, Label, Input, CardHeader, Card,
+    // Modal, ModalHeader, ModalBody, ModalFooter,Table
+    Jumbotron
 } from 'reactstrap';
 
 
@@ -18,108 +20,53 @@ class StudentDashboard extends Component {
             descrip: '',
             salary: '',
             title: '',
+            name: 'student',
+            email: 'student@gmail.com',
+            socialProfile: '',
 
         };
 
-        this.toggle = this.toggle.bind(this);
     }
-    onChange = e => {
-        this.setState({ [e.target.id]: [e.target.value] })
-    }
+   
 
-    onSubmit = e => {
-        e.preventDefault();
-        const { title, salary, descrip, allounce } = this.state
+    // onSubmit = e => {
+    //     e.preventDefault();
+    //     const { title, salary, descrip, allounce } = this.state
 
-        const newjob = {
-            title,
-            salary,
-            descrip,
-            allounce,
-        }
-        console.log(newjob);
-        this.props.newJob(newjob)
-    }
+    //     const newjob = {
+    //         title,
+    //         salary,
+    //         descrip,
+    //         allounce,
+    //     }
+    //     console.log(newjob);
+    //     this.props.newJob(newjob)
+    // }
 
-    toggle() {
-        this.setState(prevState => ({
-            modal: !prevState.modal
-        }));
-    }
+    // toggle() {
+    //     this.setState(prevState => ({
+    //         modal: !prevState.modal
+    //     }));
+    // }
     render() {
         const { title, salary, descrip, allounce } = this.state
         return (
-            <div>
-                <Button color="danger" onClick={this.toggle}> Add Info </Button>
-                <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}>Post a Job</ModalHeader>
-                    <ModalBody>
-                        <Card body>
-                            <Form noValidate onSubmit={this.onSubmit} >
-                                <FormGroup>
-                                    <Label for="title">Title</Label>
-                                    <Input type="text" name="title" required
-                                        onChange={this.onChange}
-                                        value={title} id="title" placeholder="write Title"
-                                        className={classnames("", {
-                                            // invalid: errors.name
-                                        })} />
-                                    {/* <span className="red-text">{errors.name}</span> */}
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label for="salary">salary</Label>
-                                    <Input type="number" name="salary" required
-                                        onChange={this.onChange}
-                                        value={salary} id="salary" placeholder="Salary"
-                                        className={classnames("", {
-                                            // invalid: errors.email
-                                        })} />
-                                    {/* <span className="red-text">{errors.email}</span> */}
+            <div  >
+      <Jumbotron>
+               
 
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label for="allounce">If Allounce</Label>
-                                    <Input type="text" name="allounce"
-
-                                        value={allounce}
-                                        onChange={this.onChange} id="allounce" placeholder="allounce"
-                                        className={classnames("", {
-                                            // invalid: errors.password
-                                        })} />
-                                    {/* <span className="red-text">{errors.password}</span> */}
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label for="descrip">Description optional</Label>
-                                    <Input type="textarea" name="descrip"
-                                        value={descrip}
-                                        onChange={this.onChange} id="descrip" placeholder="Description"
-                                        className={classnames("", {
-                                            // invalid: errors.password
-                                        })} />
-                                    {/* <span className="red-text">{errors.password}</span> */}
-                                </FormGroup>
-                                {/* <select
-                                      value={this.state.selector}
-                                      onChange={(e) => this.setState({selector: e.target.value})}>
-
-                                        <option value="">User type</option>
-                                        <option value="student">student</option>
-                                        <option value="company">company</option>
-                                  </select> */}
-
-                                {/* {this.state.errors ? ("you entered wrong data" , this.state.errors ): null} */}
-                                <FormGroup>
-                                    <Button color="danger" type="submit" className=" button text-right" >Signup</Button>
-                                </FormGroup>
-
-                                <Button color="secondary" onClick={this.toggle}>Cancel</Button>
-
-                            </Form>
-                        </Card >
-                    </ModalBody>
-                    <ModalFooter>
-                    </ModalFooter>
-                </Modal>                {/* <Link to="companyJob">   </Link> */}
+               <h1>Student dashboard</h1>    
+               {/* <ul>
+               <li>  <Link to='/allStudent' >all Students </Link> </li>
+               <li> <Link to='/allCompany' >all Company</Link> </li>
+               <li><Link to='/postedJob' >All Job</Link> </li>
+                   
+               </ul> */}
+               {/* <Link to='/allJob' >all jobs</Link> */}
+              
+               </Jumbotron>
+                {/* <Link to='/allJob' > All Job  </Link> */}
+                {/* <Link to='/companies' > All Companies  </Link> */}
             </div>
         );
     }

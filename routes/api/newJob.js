@@ -6,22 +6,23 @@ const NewJob = require('../../models/NewJob');
 
 router.post('/', (req, res) => {
 
-    let {allounce,title,descrip,salary} = req.body
+    let {allounce,title,descrip,salary,email} = req.body
 
-    if(!allounce || !salary || !descrip || !title){
+    if(!allounce || !salary || !descrip || !title || !email){
         res.status(400).json({msg: "Error from new job"})
     }
 //  allounce = allounce[0];
 //  title[0];
 //  salary[0];
 //  descrip[0]
-    console.log(allounce[0],salary[0],title,salary);
+    console.log(allounce[0],salary[0],title,salary,email);
 
     const newJob = new NewJob({
        title:title[0],
        salary:salary[0],
        descrip:descrip[0],
        allounce:allounce[0],
+       email: email[0],
     });
 
     newJob.save()
@@ -31,6 +32,8 @@ router.post('/', (req, res) => {
 
 
 })
+
+
 
 
 

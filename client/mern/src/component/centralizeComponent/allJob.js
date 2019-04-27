@@ -2,9 +2,10 @@ import React,{Component} from 'react';
 import {Link} from 'react-router-dom';
 import {connect}  from 'react-redux'
 import axios from 'axios';
+
 import {
     Button, Form, FormGroup, Label, Input, CardHeader, Card,
-    Modal, ModalHeader, ModalBody, ModalFooter
+    Modal, ModalHeader, ModalBody, ModalFooter,Jumbotron,Spinner
 } from 'reactstrap';
 
 class AllJobs extends Component {
@@ -18,8 +19,12 @@ class AllJobs extends Component {
             education: '',
             socialMediaProfile:'',
             workingProfile:'',
+            loading: true,
+            id:'',
+            error: ''
          }
          this.toggle = this.toggle.bind(this);    
+        // //  this.toggle = this.toggle.bind(this);    
         }
 
     componentDidMount(){
@@ -28,66 +33,125 @@ class AllJobs extends Component {
         let newArr = new Array();
             newArr.push(res.data)
             this.setState({
-                jobData:newArr
+                jobData:newArr,
+                loading: false
             })
-            console.log(this.state.jobData);
+            console.log(this.props.auth.authUser.user);
     })
         .catch(err => console.log("err job ka ui sy",err.message));
     }
 
-    toggle() {
+    toggle(ids) {
+        const {id}  = this.state
+        console.log(ids)
         this.setState(prevState => ({
-            modal: !prevState.modal
+            modal: !prevState.modal,
+            id:ids,
+
         }));
     }
 
-onChange = e => {
+onChange = (e) => {
     this.setState({ [e.target.id] : [e.target.value] })
 }
 
-    onSubmit = e => {
+    onSubmit = (e) => {
         e.preventDefault();
-        const {name,email,socialMediaProfile,workingProfile,education} = this.state;
-
+        const {name,email,socialMediaProfile,workingProfile,education,id} = this.state;
+        console.log(id)
     const postedJob = {
             name,
             email,
             education,
             socialMediaProfile,
             workingProfile,
+            id,
     }
 console.log("job [pos", postedJob)
 
-    onsubmit = (id) => {
+        
         axios.post('/api/postJob', postedJob)
         .then(res => {
             console.log(res,"response post wala");
-            // this.setState
+            this.setState({
+                modal: false
+            })
         })
-        .catch(err => console.log("err post waala", err.message))
+        .catch(err => {
+            this.setState({
+                error: err.message
+            })
+        })
     }
+    
+
+    delete = (email,index) => {
+        let {jobData } = this.state
+        console.log(email);
+        axios.delete("api/admindel",email)
+        .then(res => {
+            // console.log("deleted",);
+
+                jobData.splice(index,index+1);
+                this.setState({
+                    evein:false
+                })
+            // const filter = res.data( e => {
+            //     return e.email !== email
+            // })
+
+        })
+        .catch(err => console.log("err from delkte", err.message))
     }
 
     render() { 
         const {name,email,socialMediaProfile,workingProfile,education} = this.state;
+        
         return ( 
+          
             <div>
+                 {  this.state.loading === true ?
+                    <Spinner style={{marginLeft: "50%", marginTop: "25%"}} color='info' />
+                    :
+        <div>
                 {this.state.jobData.map(e => {
                     
-                    return e.map(elem => {
+                    return e.map((elem,index) => {
                         return (
                             <div> 
-                                <li>{elem.title}</li>
-                                <li>{elem.salary}</li>
-                                <li>{elem.allounce}</li>
-                                <li>{elem.descrip}</li>
+                                <Jumbotron>
+
+                                    <h1 className="display-3"> Job Title:  {elem.title}</h1>
+                                    <p className="lead"> Salary:  {elem.salary}</p>
+                                    <hr className="my-2" />
+                                    <p> Allounces:  {elem.allounce}</p>
+                                    <p> Descrip:  {elem.descrip}</p>
+                                    <p> Descrip:  {elem.email}</p>
+                                    <p> Descrip:  {index}</p>
+                                    <p className="lead">
+                                    {/* <p value={this.state.id === elem._id} > </p> */}
+
+                                {  this.props.auth.authUser.user === "admin" ?
+
+                                    <Button color="danger" onClick={this.delete.bind(this,elem.email,index)}> Delete  </Button>
+
+                                    :
+                                <Button color="primary" onClick={this.toggle.bind(this,elem._id)}> Apply  </Button>
+                                // <Button color='danger' onClick={this.delete.bind(this,elem.email, index)} > Delete </Button>
+
+
+                                }
+
+
+                                {/* <Button color="primary">Learn More</Button> */}
+                                    </p>
+                               
                                 {/* <button onClick={this.post.bind(this,elem.id)} > Apply </button> */}
-                                <Button color="danger" onClick={this.toggle}> Add Job </Button>
-                <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+                <Modal isOpen={this.state.modal} toggle={this.toggle} >
                     <ModalHeader toggle={this.toggle}>Post a Job</ModalHeader>
                     <ModalBody>
                         <Card body>
-                            <Form noValidate onSubmit={this.onSubmit} >
+                            <Form noValidate onSubmit={ this.onSubmit} >
                                 <FormGroup>
                                     <Label for="name">Name</Label>
                                     <Input type="text" name="name" required
@@ -115,21 +179,24 @@ console.log("job [pos", postedJob)
                                     {/* <span className="red-text">{errors.password}</span> */}
                                 </FormGroup>
                                 <FormGroup>
-                                    <Label for="social">Social Media Profile</Label>
+                                    <Label for="social">Social Media profile</Label>
                                     <Input type="text" name="social"
+
                                         value={socialMediaProfile}
-                                        onChange={this.onChange} id="social" placeholder="Social Media profile"/>
+                                        onChange={this.onChange} id="socialMediaProfile" placeholder="Any Social media profile"/>
                                        
                                     {/* <span className="red-text">{errors.password}</span> */}
                                 </FormGroup>
+                              
                                 <FormGroup>
                                     <Label for="other">Social Media Profile</Label>
                                     <Input type="text" name="other" 
                                         value={workingProfile}
-                                        onChange={this.onChange} id="other" placeholder="other profile"/>
+                                        onChange={this.onChange} id="workingProfile" placeholder="other profile"/>
                                        
                                     {/* <span className="red-text">{errors.password}</span> */}
                                 </FormGroup>
+                                <p style={{color:'red'}} >{this.state.error}</p>
                                 {/* <select
                                       value={this.state.selector}
                                       onChange={(e) => this.setState({selector: e.target.value})}>
@@ -138,13 +205,13 @@ console.log("job [pos", postedJob)
                                         <option value="student">student</option>
                                         <option value="company">company</option>
                                   </select> */}
-
+{/* <p>{elem._id}</p> */}
                                 {/* {this.state.errors ? ("you entered wrong data" , this.state.errors ): null} */}
                                 <FormGroup>
-                                    <Button color="danger" type="submit" className=" button text-right" >Signup</Button>
+                                    <Button color="primary"  type="submit" className=" button text-right" >Submit</Button>
                                 </FormGroup>
 
-                                <Button color="secondary" onClick={this.toggle}>Cancel</Button>
+                                <Button color="danger" onClick={this.toggle} >Cancel</Button>
 
                             </Form>
                         </Card >
@@ -152,6 +219,8 @@ console.log("job [pos", postedJob)
                     <ModalFooter>
                     </ModalFooter>
                 </Modal>
+                </Jumbotron>
+
 
                             </div>
                         )
@@ -159,16 +228,19 @@ console.log("job [pos", postedJob)
                    
                 })}
                 
-            </div>
+    </div> }
+    </div>
          );
+
     }
 }
  
 
 //redux
 const mapStateToProps = (state) => {
+    console.log(state.authReducer.authUser.user)
     return {
-        // newJob
+        auth: state.authReducer
     }
 }
 export default connect(mapStateToProps,null)(AllJobs);

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios';
 import { Button, Jumbotron, Spinner } from 'reactstrap'
 
-class AllCompany extends Component {
+class PostedJob extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -19,18 +19,18 @@ class AllCompany extends Component {
 
 
     componentDidMount() {
-        axios.get('http://localhost:5000/api/allCompany')
+        axios.get('http://localhost:5000/api/allPostJob')
             .then(res => {
-                const company = res.data.filter(e => {
-                    return e.userType === "company"
-                })
+                // const company = res.data.filter(e => {
+                //     return e.userType === "company"
+                // })
                 this.setState({
                     // studentData: student,
-                    companyData: company,
+                    companyData: res.data,
                     loading: false
                 })
 
-                console.log(company, "company")
+                // console.log(company, "company")
                 // const student = res.data.filter(e => {
                 //     return e.userType === "student"
                 // })
@@ -78,12 +78,19 @@ class AllCompany extends Component {
                             return (
 
                                 <Jumbotron>
-                                    <p>Comapny : {index+1}</p>
-                                    <p> name: {elem.name}</p>
+                                    <p>fresh sy</p>
+                                    <p> name: {elem.title}</p>
                                     <p> email:  {elem.email}</p>
-                                    {/* <p> user Type:   {elem.userType}</p> */}
-                                    {this.props.auth.authUser.user === "admin" ? 
-                                    <Button color='danger' onClick={this.delete.bind(this, elem.email, index)} > Delete </Button> : null}
+                                    <p> user Type:   {elem.salary}</p>
+                                    {this.props.auth.authUser.user === "admin" ?
+                                    <Button color='danger' onClick={this.delete.bind(this, elem.email, index)} > Delete </Button> 
+                                :
+                                <Button color='danger' type="button" > Select For post </Button> 
+                                
+                                 }
+                                    
+                                
+                                    
                                 </Jumbotron>
                             )
                             // })
@@ -104,8 +111,7 @@ class AllCompany extends Component {
 //redux
 const mapStateToProps = (state) => {
     return {
-        auth: state.authReducer,
-        
+        auth: state.authReducer
     }
 }
-export default connect(mapStateToProps, null)(AllCompany);
+export default connect(mapStateToProps, null)(PostedJob);

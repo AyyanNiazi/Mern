@@ -11,6 +11,11 @@ const newJob = new Schema({
         type: Number,
         required: true
     },
+    email: {
+        type: String,
+        required: true,
+        unique:true,
+    },
     descrip:{
         type: String,
         required: true
@@ -18,7 +23,7 @@ const newJob = new Schema({
     allounce: {
         type: String,
         required: true
-    }
+    },
 })
 
 

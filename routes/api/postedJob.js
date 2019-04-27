@@ -7,12 +7,13 @@ router.post('/', (req,res) => {
     
     const {workingProfile,socialMediaProfile,education,name,email,id}  = req.body
     
-    console.log(id, "iddd")
+    console.log(id, "iddd abhi wali")
+
     if(!education || !email || !name){
         return res.status(400).json("register error")
     }
 
-    Posted.findOne({_id:id})
+    Posted.findOne({id})
     .then(user => {
         if(user)
         return res.status(400).json({email: "Email already exist "})

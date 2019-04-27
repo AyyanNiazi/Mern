@@ -18,6 +18,7 @@ class CompanyDashboard extends Component {
             descrip: '',
             salary: '',
             title: '',
+            email: ''
 
         };
 
@@ -27,18 +28,27 @@ class CompanyDashboard extends Component {
         this.setState({ [e.target.id]: [e.target.value] })
     }
 
+    componentDidMount(){
+        this.setState(prevState => ({
+            modal: !prevState.modal
+        }));
+    }
+
     onSubmit = e => {
         e.preventDefault();
-        const { title, salary, descrip, allounce } = this.state
+        const { title, salary,email, descrip, allounce } = this.state
 
         const newjob = {
             title,
             salary,
             descrip,
             allounce,
+            email,
         }
         console.log(newjob);
         this.props.newJob(newjob)
+
+
     }
 
     toggle() {
@@ -47,10 +57,10 @@ class CompanyDashboard extends Component {
         }));
     }
     render() {
-        const { title, salary, descrip, allounce } = this.state
+        const { title, salary, descrip, allounce,email } = this.state
         return (
             <div>
-                <Button color="danger" onClick={this.toggle}> Add Job </Button>
+                {/* <Button  onClick={this.toggle}> Post job </Button> */}
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <ModalHeader toggle={this.toggle}>Post a Job</ModalHeader>
                     <ModalBody>
@@ -61,6 +71,16 @@ class CompanyDashboard extends Component {
                                     <Input type="text" name="title" required
                                         onChange={this.onChange}
                                         value={title} id="title" placeholder="write Title"
+                                        className={classnames("", {
+                                            // invalid: errors.name
+                                        })} />
+                                    {/* <span className="red-text">{errors.name}</span> */}
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="email">Email</Label>
+                                    <Input type="email" name="email" required
+                                        onChange={this.onChange}
+                                        value={email} id="email" placeholder=" email"
                                         className={classnames("", {
                                             // invalid: errors.name
                                         })} />
@@ -109,17 +129,19 @@ class CompanyDashboard extends Component {
 
                                 {/* {this.state.errors ? ("you entered wrong data" , this.state.errors ): null} */}
                                 <FormGroup>
-                                    <Button color="danger" type="submit" className=" button text-right" >Signup</Button>
+                                    <Button color="danger" type="submit" className=" button text-right" >Post</Button>
                                 </FormGroup>
 
                                 <Button color="secondary" onClick={this.toggle}>Cancel</Button>
 
                             </Form>
                         </Card >
+
                     </ModalBody>
                     <ModalFooter>
                     </ModalFooter>
-                </Modal>                {/* <Link to="companyJob">   </Link> */}
+                </Modal>         
+                       {/* <Link to="companyJob">   </Link> */}
             </div>
         );
     }

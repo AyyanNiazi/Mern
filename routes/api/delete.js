@@ -6,12 +6,25 @@ const User = require('../../models/User');
 
 
 // @access  Private
-router.delete('/:', (req, res) => {
-    console.log(req.params.id,"id ")
-    User.findById(req.params.id)
-      .then(user => user.remove().then(() => res.json({ success: true })))
+router.delete('/', (req, res) => {
+  // const {email} = req.body
+  const {email}  = req.body
+
+  // console.log(req.body,"ye wala")
+    // console.log(req.params.id,"id ")
+    User.findOneAndDelete(email)
+      .then(user => {user.delete().then(() => res.json({ success: true,user }))})
       .catch(err => res.status(404).json({ success: false }));
   });
+
+  // router.delete('/post', (req, res) => {
+  //   const {email} = req.body
+  //   console.log(email,"ye wala")
+  //     // console.log(req.params.id,"id ")
+  //     User.findOneAndDelete(email)
+  //       .then(user => {user.remove().then(() => res.json({ success: true,user }))})
+  //       .catch(err => res.status(404).json({ success: false }));
+  //   });
 
 
 // router.post('/', (req, res) => {

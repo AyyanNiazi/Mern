@@ -1,12 +1,15 @@
 import React from 'react';
 import {actionTypes} from '../action/actionTypes'
 import isempty from 'is-empty'
+import { stat } from 'fs';
 
 const initialState = {
     token: localStorage.getItem('token'),
-    isAuth: null ,
+    isAuth: false ,
     loading: false,
     user : null,
+    authUser: '',
+    
 }
 
 export default function (state = initialState, action){
@@ -35,18 +38,22 @@ export default function (state = initialState, action){
             isLoading: false,
         }
        
-        case actionTypes.AUTH_ERRORS :
-        case actionTypes.LOGIN_FAIL :
-        case actionTypes.LOGOUT_SUCCES :
-        case actionTypes.REGISTER_FAIL : //  this action represebnts all above 3 actions also
-        //remove token from localstorage
+        case actionTypes.AUTH_ERROR :
+
+            return {
+                ...state,
+                isAuth: true,
+                authUser: action.payload
+            }
+        // case actionTypes.LOGOUT_SUCCES :
         localStorage.removeItem('token');
             return {
                 ...state,
                 token: null,
                 user: null,
                 isAuth: false,
-                isLoading: false
+                isLoading: false,
+                authUser: ''
             }
 
         default: return state

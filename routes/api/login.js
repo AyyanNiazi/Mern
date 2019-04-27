@@ -12,12 +12,13 @@ const User = require('../../models/User');
 
 //login route
 
-router.post("/", (req,res) => {
+router.post("/",  (req,res) => {
 
-    const {email,password} = req.body;
-    console.log(email,password,"login sy uper wala")
+
+    const {email,password,selector} = req.body;
+    console.log(email,password,selector,"login sy uper wala")
     //validations 
-    if(!email || !password) {
+    if(!email || !password || !selector) {
         return res.status(400).json({msg: "User didn't found"});
     }
     // const email = email;
@@ -48,6 +49,7 @@ console.log(email,"login sy");
                              id:user.id,
                              name: user.name,
                              email: user.email,
+                             selector:user.userType
                      } })
                      }    
                 )

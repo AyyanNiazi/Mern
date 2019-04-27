@@ -3,11 +3,14 @@ import { Button, Form, FormGroup, Label, Input,CardHeader, Container, Row, Col, 
 import {connect} from 'react-redux';
 import {withRouter,Link} from 'react-router-dom'
 import PropTypes from'prop-types';
-// import {login} from '../../store/action/authAction';
-import {clearErros} from '../../store/action/errorAction';
+import {auth} from '../../store/action/authAction';
+// import {clearErros} from '../../store/action/errorAction';
 import classnames from 'classnames'
+
+
 import './login.css'
 import axios from 'axios'
+// import { newJob } from '../../store/action/companyAction';
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -16,6 +19,7 @@ class Login extends Component {
             pass: '',
             errors: null,
             selector: '',
+            error: ''
         }
     }
 
@@ -37,7 +41,7 @@ class Login extends Component {
     static propTypes = {
         isAuth: PropTypes.bool,
         errors: PropTypes.object.isRequired,
-        login: PropTypes.func.isRequired,
+        auth: PropTypes.func.isRequired,
         clearErros: PropTypes.func.isRequired
     }
 
@@ -52,25 +56,56 @@ class Login extends Component {
         }
       }
     onSubmit = e => {
-        const {name,pass,pass2,email,selector} = this.state
+        const {pass,email,selector} = this.state
         e.preventDefault();
           //new user
         const user = {
             email,
-            pass,
+            password:pass,
+            selector,
         }
-        axios.post('/api/login',user)
+
+        // const authUser = {user: "user"}
+        // this.props.auth(authUser)
+        // this.props.history.push('/studentDashboard')
+        // console.log(user);
+        if(email === "admin@gmail.com" && pass === "admin123"){
+           const authUser={user: "admin"}
+            this.props.auth(authUser)  
+            this.props.history.push('/adminDashboard')
+        }
+//         if(selector === "student"){
+//             const authUser={user: "user"}
+//             this.props.auth(authUser)
+// console.log(this.props.auth(authUser))
+//             this.props.history.push('/studentDashboard');
+//          }
+       
+        axios.post('http://localhost:5000/api/login',user)
         .then(res => {
-            if(res.data.student === "student" && selector === "student"){ 
+            console.log(res.data.user.selector)
+            if( selector === "student"  && res.data.user.selector === "student" ){ 
+              
+                const authUser={user: "user",selector}            
+                this.props.auth(authUser)
+
             this.props.history.push('/studentDashboard');
             }
-            else if (res.data.company && selector === "company"){
-            this.props.history.push('/companyDashboard');
+            else if ( selector === "company" &&  res.data.user.selector === "company"){
+               const authUser={user: "user", selector}
+            this.props.auth(authUser)
+         console.log(this.props.auth(authUser))
+            this.props.history.push('/companyMain');
                 
             }
             console.log(res.data.student)
+            // this.props.auth()
         })
-        .catch(err => console.log("login sy error", err.message))
+        .catch(err => {console.log("login sy error", err.message)
+        this.setState({
+            error: err.message
+        })
+    })
         // this.props.login(user, this.props.history);
         // this.setState({
         //     name: '',
@@ -116,22 +151,28 @@ class Login extends Component {
                                           })} />
                                               {/* <span className="red-text">{errors.password}</span> */}
                                     </FormGroup>
-                                    <select
+                                    <Input type="select"
                                       value={this.state.selector}
                                       onChange={(e) => this.setState({selector: e.target.value})}>
 
                                         <option value="">User type</option>
                                         <option value="student">student</option>
                                         <option value="company">company</option>
-                                  </select>
+                                  </Input>
+                                  <p  style={{color: 'red'}}>{this.state.error}</p>
                                     {/* {this.state.errors ? ("you entered wrong data" , this.state.errors ): null} */}
                                     <FormGroup>
                                         <Button color="danger" type="submit" className=" button text-right" >Login</Button>
+                                    </FormGroup><br/>
+                                    <FormGroup>
+                                    {/* <Button color="danger" className="button "><Link to='/' >Register</Link></Button> */}
+
                                     </FormGroup>
-                                    <Button color="danger" className="button text-left "><Link to='/' >Register</Link></Button>
 
                                 </Form>
                             </Card >
+
+                            {/* <Link to='/studentDashboard' >Student dahsboard</Link> */}
                         </Col>
                     </Row>
                 </Container>
@@ -141,9 +182,10 @@ class Login extends Component {
 }
 
 //redux
-const mapStateToProps = state => ({
-    isAuth: state.authReducer.isAuth,
-    errors: state.errorReducer
-  });
+// const mapDispatchtoprops = dispatch => {
+//     return {
+//         auth : auth => dispatch(auth)
+//     }
+//   };
 
-export default connect()(withRouter(Login));
+export default connect(null, {auth})(withRouter(Login));

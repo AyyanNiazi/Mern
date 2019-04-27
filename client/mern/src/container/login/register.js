@@ -3,12 +3,13 @@ import { Button, Form, FormGroup, Label, Input,CardHeader, Container, Row, Col, 
 import {connect} from 'react-redux';
 import {withRouter,Link} from 'react-router-dom'
 import PropTypes from'prop-types';
-import {registerUser} from '../../store/action/authAction';
-import {clearErros} from '../../store/action/errorAction';
+import {auth} from '../../store/action/authAction'
+// import {clearErros} from '../../store/action/errorAction';
 import classnames from 'classnames'
 import axios from 'axios'
 import './login.css'
 
+import Header from '../../component/header'
 class Register extends Component {
     constructor(props) {
         super(props);
@@ -18,7 +19,8 @@ class Register extends Component {
             pass: '',
             pass2: '',
             errors: null,
-            selector:''
+            selector:'',
+            user: false
         }
     }
 
@@ -40,7 +42,7 @@ class Register extends Component {
     static propTypes = {
         isAuth: PropTypes.bool,
         errors: PropTypes.object.isRequired,
-        registerUser: PropTypes.func.isRequired,
+        auth: PropTypes.func.isRequired,
         clearErros: PropTypes.func.isRequired
     }
 
@@ -55,44 +57,54 @@ class Register extends Component {
         }
       }
       componentDidMount(){
-          console.log(this.props)
+          console.log(this.props);
+
       }
     onSubmit = e => {
         const {name,pass,selector,email} = this.state
         e.preventDefault();
           //new user
-          if(selector === "student"){ 
+           
         const newUser = {
             name,
-            email,
+        email,
             pass,
             selector
             // pass2
         }
+        this.props.auth(newUser)
       axios.post('/api/register',newUser)
-      .then(res => {console.log("register say", res.data.users.userType)
+      .then(res => {console.log("register say", res.dat)
         localStorage.setItem('token', res.data.token);
-
-        if(selector === "student") this.props.history.push("/studentDashboard")
-        if(selector === "company") this.props.history.push("/companyDashboard")
+        const authUser={user: "user",selector}            
+        this.props.auth(authUser)
+        console.log(res,"andar wala res resolve hua wa register sy")
+        if(selector === "student") {
+        // this.props.auth(newUser)
+        this.props.history.push("/studentDashboard")
+        
+    }
+        if(selector === "company") {
+            const authUser={user: "user",selector}            
+            this.props.auth(authUser)
+            // this.props.auth(auth)            
+            this.props.history.push("/companyMain")
        
+    }
+       
+        this.setState({
+            user: true
+        })
+
     })
       .catch(err => console.log("resgitr sy erro", err.message))        
         
         // this.props.registerUser(newUser);    
         console.log("new user from register: ", newUser)
         
-    }
-    else if(selector === "company"){
-        const newUser = {
-            name,
-            email,
-            pass,
-            selector,
-            // pass2
-        }
-        this.props.registerUser(newUser, this.props.history);    
-        console.log("new user from register: ", newUser)
+    
+     
+        // console.log("new user from register: ", newUser)
         
     }
 
@@ -104,12 +116,13 @@ class Register extends Component {
         // })
 
         // console.log("new user from register: ", newUser)
-    }
+    
 
   
 
     render() {
         const {name,email,pass,pass2,errors} = this.state
+
         return (
             <div>
                 <Container>
@@ -160,7 +173,7 @@ class Register extends Component {
                                   </select>
                                   
                                     {/* {this.state.errors ? ("you entered wrong data" , this.state.errors ): null} */}
-                                    <Button color="danger" className="button text-left "><Link to='/login' >Login</Link></Button>
+                                    {/* <Button color="danger" className="button text-left "><Link to='/login' >Login</Link></Button> */}
                                     <FormGroup>
                                         <Button color="danger" type="submit" className=" button text-left" >Signup</Button>
                                     </FormGroup>
@@ -171,15 +184,27 @@ class Register extends Component {
                         </Col>
                     </Row>
                 </Container>
+
+                {this.state.user === true ?
+                <Header user={this.state.user} />
+                
+                :null
+            }
             </div>
         );
     }
 }
 
 //redux
-const mapStateToProps = state => ({
-    isAuth: state.authReducer.isAuth,
-    errors: state.errorReducer
-  });
+// const mapStateToProps = state => ({
+//     isAuth: state.authReducer.isAuth,
+//     errors: state.errorReducer
+//   });
 
-export default connect(mapStateToProps,{registerUser})(withRouter(Register));
+//   const mapDispatchToProps = dispatch => {
+//     return {
+//         a
+//     } 
+//   };
+  
+export default connect(null,{auth})(withRouter(Register));

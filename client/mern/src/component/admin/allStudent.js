@@ -2,13 +2,16 @@ import React,{Component} from 'react';
 import {Link} from 'react-router-dom';
 import {connect}  from 'react-redux'
 import axios from 'axios';
+import {Button,Jumbotron} from 'reactstrap'
+import {Spinner} from 'reactstrap'
 
 class AllStudent extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            companyData: [],
             studentData: [],
+            loading: true,
+            evein: false,
             
          }
     }
@@ -21,6 +24,7 @@ class AllStudent extends Component {
             })
             this.setState({
                 studentData: student,
+                loading: false
             })
 
          
@@ -33,35 +37,51 @@ class AllStudent extends Component {
         .catch(err => console.log("err job ka ui sy",err.message));
     }
 
-    delete = id => {
-
-        axios.delete("/api/admindel",id)
+    delete = (email,index) => {
+        let {studentData } = this.state
+        console.log(email);
+        
+        axios.delete("/api/admindel",email)
         .then(res => {
-            console.log("deleted", res);
-            const filter = res.data.filter(e => {
-                return e.id !== id
-            })
+            console.log("deleted", typeof res.data.user);
+
+                studentData.splice(index,index+1);
+                this.setState({
+                    evein:false
+                })
+            // const filter = res.data( e => {
+            //     return e.email !== email
+            // })
+
         })
+
+
         .catch(err => console.log("err from delkte", err.message))
     }
 
     render() { 
         return ( 
             <div>
-                 {this.state.studentData.map(elem => {
+                 {this.state.loading === true ?
+                    <Spinner style={{marginLeft: "50%", marginTop: "25%"}} color='info' />
+                    :<div>
+                 {this.state.studentData ? this.state.studentData.map((elem,index) => {
                     
                     // return e.map(elem => {
                         return (
-                            <div> 
-                                <li>{elem.name}</li>
-                                <li>{elem.email}</li>
-                                <li>{elem.userType}</li>
-                                <button  onClick={this.delete.bind(this,elem.id)} > Delete </button>
-                            </div>
+                           
+                                <Jumbotron> 
+                                <p> {index+1} </p>
+                                <p> name: {elem.name}</p>
+                                <p> email:  {elem.email}</p>
+                                <p> user Type:   {elem.userType}</p>
+                                {this.props.auth.authUser.user === "admin" ? 
+                                    <Button color='danger' onClick={this.delete.bind(this, elem.email, index)} > Delete </Button> : null}
+                                </Jumbotron>
                         )
                     // })
                    
-                })} 
+                }) :  <h1> no student found</h1> } </div>}
                 
                 
                    
@@ -75,7 +95,7 @@ class AllStudent extends Component {
 //redux
 const mapStateToProps = (state) => {
     return {
-        // newJob
+        auth: state.authReducer
     }
 }
 export default connect(mapStateToProps,null)(AllStudent);

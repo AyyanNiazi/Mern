@@ -1,36 +1,33 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux'
+import React,{Component} from 'react';
+import {Link} from 'react-router-dom';
+import {connect}  from 'react-redux'
 import axios from 'axios';
-import { Button, Jumbotron, Spinner } from 'reactstrap'
+import {Jumbotron,Spinner,Button}  from 'reactstrap'
+import { stat } from 'fs';
 
-class AllCompany extends Component {
+class ForCompany extends Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.state = { 
             companyData: [],
             studentData: [],
-            loading: true,
-            evein: true
-
-
-        }
+            
+         }
     }
 
-
     componentDidMount() {
-        axios.get('http://localhost:5000/api/allCompany')
+        axios.get('http://localhost:5000/api/forCompany')
             .then(res => {
-                const company = res.data.filter(e => {
-                    return e.userType === "company"
-                })
+                // const company = res.data.filter(e => {
+                //     return e.userType === "company"
+                // })
                 this.setState({
                     // studentData: student,
-                    companyData: company,
+                    companyData: res.data,
                     loading: false
                 })
 
-                console.log(company, "company")
+                console.log(res.data, "company")
                 // const student = res.data.filter(e => {
                 //     return e.userType === "student"
                 // })
@@ -49,16 +46,17 @@ class AllCompany extends Component {
             .catch(err => console.log("err job ka ui sy", err.message));
     }
 
+
     delete = (email, index) => {
         let {companyData} =  this.state;
         console.log(email)
-        axios.delete("/api/admindel", email)
+        axios.post("http://localhost:5000/api/admindel", email)
             .then(res => {
-                console.log("deleted", res);
-                companyData.splice(index,index+1);
-                this.setState({
-                    evein: false
-                })
+                // console.log("deleted", res);
+                // companyData.splice(index,index+1);
+                // this.setState({
+                //     evein: false
+                // })
                 // const filter = res.data.filter(e => {
                 //     return e.email !== email
                 // })
@@ -66,8 +64,8 @@ class AllCompany extends Component {
             .catch(err => console.log("err from delkte", err.message))
     }
 
-    render() {
-        return (
+    render() { 
+        return ( 
             <div>
                 {this.state.loading === true ?
                     <Spinner style={{marginLeft: "50%", marginTop: "25%"}} color='info' />
@@ -78,12 +76,13 @@ class AllCompany extends Component {
                             return (
 
                                 <Jumbotron>
-                                    <p>Comapny : {index+1}</p>
                                     <p> name: {elem.name}</p>
                                     <p> email:  {elem.email}</p>
-                                    {/* <p> user Type:   {elem.userType}</p> */}
-                                    {this.props.auth.authUser.user === "admin" ? 
-                                    <Button color='danger' onClick={this.delete.bind(this, elem.email, index)} > Delete </Button> : null}
+                                    <p> user Type:   {elem.education}</p>
+                                    {this.props.auth.user === 'admin'?
+                                    <Button color='danger' onClick={this.delete.bind(this, elem.email, index)} > Delete </Button>
+                                    : null
+                                }
                                 </Jumbotron>
                             )
                             // })
@@ -96,16 +95,15 @@ class AllCompany extends Component {
 
 
             </div>
-        );
+         );
     }
 }
-
+ 
 
 //redux
 const mapStateToProps = (state) => {
     return {
-        auth: state.authReducer,
-        
+        auth: state.authReducer.authUser
     }
 }
-export default connect(mapStateToProps, null)(AllCompany);
+export default connect(mapStateToProps,null)(ForCompany);

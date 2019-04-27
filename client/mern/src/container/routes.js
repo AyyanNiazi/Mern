@@ -10,13 +10,19 @@ import Header from '../component/header';
 import Register from './login/register'
 import Login from './login/login'
 import PrivateRoute from './privateRoute'
+import AdminRoute from './adminRoute'
 import CompanyDashboard from '../component/company/companyDashboard'
-import PostedJob from '../component/company/postedJob'
+import CompanyMain from '../component/company/companyMain'
+import ForCompany from '../component/company/forCompany'
+import PostedJob from '../component/centralizeComponent/fresh'
 import StudentDashboard from '../component/student/studentDashbaoard'
 import AllJobs from '../component/centralizeComponent/allJob'
 import AllStudent from '../component/admin/allStudent'
 import AllCompany from '../component/admin/allCompany'
 import Companies from '../component/student/companies'
+import AdminDashboard from '../component/admin/adminDashboard';
+import privateRoute from './privateRoute';
+
 // if (localStorage.jwtToken) {
 //     // Set auth token header auth
 //     const token = localStorage.jwtToken;
@@ -52,14 +58,17 @@ class Routes extends Component {
                         <Route exact path='/login' component={Login}  />
                         <Route exact path='/' component={Register}  />
                         {/* <PrivateRoute exact path="/dashboard" component={Dashboard} /> */}
-                        {/* <PrivateRoute exact path="/studentDashboard" component={StudentDashboard} /> */}
-                        <Route exact path="/studentDashboard" component={StudentDashboard} />
-                        <Route exact path="/companyDashboard" component={CompanyDashboard} />
-                        <Route exact path="/allJob" component={AllJobs} />
-                        <Route exact path="/allStudent" component={AllStudent} />
-                        <Route exact path="/allCompany" component={AllCompany} />
-                        <Route exact path="/companies" component={Companies} />
-                        <Route exact path="/postedJob" component={PostedJob} />
+                        <PrivateRoute exact path="/studentDashboard" component={StudentDashboard} />
+                        <AdminRoute exact path="/adminDashboard" component={AdminDashboard} />
+                        {/* <Route exact path="/studentDashboard" component={StudentDashboard} /> */}
+                        <PrivateRoute exact path="/companyDashboard" component={CompanyDashboard} />
+                        <PrivateRoute exact path="/forCompany" component={ForCompany} />
+                        <PrivateRoute exact path="/companyMain" component={CompanyMain} />
+                        <PrivateRoute exact path="/allJob" component={AllJobs} />
+                        <PrivateRoute exact path="/allStudent" component={AllStudent} />
+                        <PrivateRoute exact path="/allCompany" component={AllCompany} />
+                        <PrivateRoute exact path="/companies" component={Companies} />
+                        <PrivateRoute exact path="/postedJob" component={PostedJob} />
                     </Switch>
                 </Router>
             </React.Fragment>
