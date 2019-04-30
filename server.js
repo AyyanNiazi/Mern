@@ -14,6 +14,7 @@ const deleteReq = require('./routes/api/delete');
 const postedjob = require("./routes/api/postedJob");
 const allPostJob = require('./routes/api/allPostJob')
 const forCompany = require('./routes/api/forCompany')
+const postDel = require('./routes/api/postDel')
 
 const app = express();
 app.use(cors())
@@ -63,6 +64,7 @@ app.use('/api/alljob',  allJob );
 app.use('/api/allStudent',  allStudent );
 app.use('/api/allCompany',  allCompany );
 app.use('/api/admindel',  deleteReq );
+app.use('/api/postDel',  postDel );
 app.use('/api/postJob', postedjob)
 app.use('/api/allPostJob', allPostJob)
 app.use('/api/forCompany', forCompany)

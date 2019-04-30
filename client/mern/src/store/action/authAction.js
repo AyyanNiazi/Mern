@@ -185,6 +185,7 @@ export const auth = authData => {
 
 // //Loggedout
 export const logout = () => { 
+    console.log("logout")
 return {
     type: actionTypes.LOGOUT_SUCCES
 }

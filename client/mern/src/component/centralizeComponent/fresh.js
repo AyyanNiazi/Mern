@@ -30,7 +30,7 @@ class PostedJob extends Component {
                     loading: false
                 })
 
-                // console.log(company, "company")
+                console.log(res, "response")
                 // const student = res.data.filter(e => {
                 //     return e.userType === "student"
                 // })
@@ -52,7 +52,7 @@ class PostedJob extends Component {
     delete = (email, index) => {
         let {companyData} =  this.state;
         console.log(email)
-        axios.delete("/api/admindel", email)
+        axios.delete("/api/postDel", email)
             .then(res => {
                 console.log("deleted", res);
                 companyData.splice(index,index+1);
@@ -79,13 +79,15 @@ class PostedJob extends Component {
 
                                 <Jumbotron>
                                     <p>fresh sy</p>
-                                    <p> name: {elem.title}</p>
+                                    <p> name: {elem.name}</p>
                                     <p> email:  {elem.email}</p>
-                                    <p> user Type:   {elem.salary}</p>
+                                    <p> Education:   {elem.education}</p>
+                                    <p> Social media profile:   {elem.socialMediaProfile}</p>
+                                    <p> working profile:   {elem.workingProfile}</p>
                                     {this.props.auth.authUser.user === "admin" ?
                                     <Button color='danger' onClick={this.delete.bind(this, elem.email, index)} > Delete </Button> 
                                 :
-                                <Button color='danger' type="button" > Select For post </Button> 
+                                <Button color='primary' type="button" > Select Studentlo </Button> 
                                 
                                  }
                                     

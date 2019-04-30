@@ -21,10 +21,15 @@ class Logout extends Component{
 logouthandler () {
 
         // this.props.history.push('/login');
-        this.setState({evein: true})
+        // this.setState({evein: true})
 // this.forceUpdate()
     console.log(this.props)
-    this.props.logout(logout)
+    if(this.props.auth.isAuth === true){
+
+    // this.props.history.push('/login')
+    
+    }
+    // this.props.logout(logout)
 }
 
     render(){
@@ -42,5 +47,10 @@ logouthandler () {
 }
 
 
+const mapsp = state => {
+    return {
+        auth: state.authReducer
+    }
+}
 
-export default connect(null,{logout})(Logout)
+export default connect(mapsp,{logout})(Logout)

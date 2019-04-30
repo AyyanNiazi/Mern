@@ -24,21 +24,21 @@ class Register extends Component {
         }
     }
 
-    componentDidUpdate(prevProps){
-        const {errors} = this.props; //this is coming from store reducer
-        if(errors !== prevProps.errors){
-            if(errors.id === 'REGISTER_FAIL'){
-                this.setState({
-                    errors:errors.msg.msg
-                })
-            }
-            else{
-                this.setState({
-                    errors:null
-                })
-            }
-        }
-    }
+    // componentDidUpdate(prevProps){
+    //     const {errors} = this.props; //this is coming from store reducer
+    //     if(errors !== prevProps.errors){
+    //         if(errors.id === 'REGISTER_FAIL'){
+    //             this.setState({
+    //                 errors:errors.msg.msg
+    //             })
+    //         }
+    //         else{
+    //             this.setState({
+    //                 errors:null
+    //             })
+    //         }
+    //     }
+    // }
     static propTypes = {
         isAuth: PropTypes.bool,
         errors: PropTypes.object.isRequired,
@@ -50,11 +50,11 @@ class Register extends Component {
         this.setState({ [e.target.id]: e.target.value  })
     }
     componentWillReceiveProps(nextProps) {
-        if (nextProps.errors) {
-          this.setState({
-            errors: nextProps.errors
-          });
-        }
+        // if (nextProps.errors) {
+        //   this.setState({
+        //     errors: nextProps.errors
+        //   });
+        // }
       }
       componentDidMount(){
           console.log(this.props);
@@ -97,7 +97,11 @@ class Register extends Component {
         })
 
     })
-      .catch(err => console.log("resgitr sy erro", err.message))        
+      .catch(err => {console.log("resgitr sy erro", err.message)
+        this.setState({
+            errors: err.message
+        })
+    })        
         
         // this.props.registerUser(newUser);    
         console.log("new user from register: ", newUser)
@@ -130,7 +134,7 @@ class Register extends Component {
                         <Col>
                             <Card body>
                                 <CardHeader className="card-head" >Register</CardHeader>
-                                <Form  noValidate onSubmit={ this.onSubmit} >
+                                <Form   onSubmit={ this.onSubmit} >
                                     <FormGroup>
                                         <Label for="name">Name</Label>
                                         <Input type="text" name="name" required
@@ -163,15 +167,17 @@ class Register extends Component {
                                           })} />
                                               {/* <span className="red-text">{errors.password}</span> */}
                                     </FormGroup>
-                                  <select
+                                    <FormGroup> 
+                                  <Input type="select"
                                       value={this.state.selector}
                                       onChange={(e) => this.setState({selector: e.target.value})}>
 
                                         <option value="">User type</option>
                                         <option value="student">student</option>
                                         <option value="company">company</option>
-                                  </select>
-                                  
+                                  </Input>
+                                  </FormGroup>
+                                  <div style={{color: 'red'}} > {this.state.errors ? <p>  Error from server please insert Right information, select any one user type or check your Data connection </p> : null } </div>
                                     {/* {this.state.errors ? ("you entered wrong data" , this.state.errors ): null} */}
                                     {/* <Button color="danger" className="button text-left "><Link to='/login' >Login</Link></Button> */}
                                     <FormGroup>

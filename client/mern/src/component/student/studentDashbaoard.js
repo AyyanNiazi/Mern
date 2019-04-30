@@ -19,6 +19,7 @@ class StudentDashboard extends Component {
             allounce: '',
             descrip: '',
             salary: '',
+            errors: '',
             title: '',
             name: 'student',
             email: 'student@gmail.com',
@@ -52,7 +53,7 @@ class StudentDashboard extends Component {
         const { title, salary, descrip, allounce } = this.state
         return (
             <div  >
-      <Jumbotron>
+             <Jumbotron>
                
 
                <h1>Student dashboard</h1>    

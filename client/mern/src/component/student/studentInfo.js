@@ -15,7 +15,7 @@ class StudentInfo extends Component {
         return ( 
             <div>
                  <Card body>
-                            <Form noValidate onSubmit={this.onSubmit} >
+                            <Form onSubmit={this.onSubmit} >
                                 <FormGroup>
                                     <Label for="title">Student name</Label>
                                     <Input type="text" name="title" required

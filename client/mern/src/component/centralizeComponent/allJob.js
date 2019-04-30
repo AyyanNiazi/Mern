@@ -21,7 +21,7 @@ class AllJobs extends Component {
             workingProfile:'',
             loading: true,
             id:'',
-            error: ''
+            errors: ''
          }
          this.toggle = this.toggle.bind(this);    
         // //  this.toggle = this.toggle.bind(this);    
@@ -74,14 +74,22 @@ console.log("job [pos", postedJob)
         .then(res => {
             console.log(res,"response post wala");
             this.setState({
-                modal: false
+                // modal: !true
             })
+            alert("your jon submited succesfully")
         })
         .catch(err => {
             this.setState({
-                error: err.message
+                errors: err.message
             })
         })
+        alert("sucessfuly applied")
+        this.setState(prevState => ({
+            modal: !prevState.modal,
+            // id:ids,
+
+        }));
+
     }
     
 
@@ -151,7 +159,7 @@ console.log("job [pos", postedJob)
                     <ModalHeader toggle={this.toggle}>Post a Job</ModalHeader>
                     <ModalBody>
                         <Card body>
-                            <Form noValidate onSubmit={ this.onSubmit} >
+                            <Form  onSubmit={ this.onSubmit} >
                                 <FormGroup>
                                     <Label for="name">Name</Label>
                                     <Input type="text" name="name" required
@@ -196,7 +204,7 @@ console.log("job [pos", postedJob)
                                        
                                     {/* <span className="red-text">{errors.password}</span> */}
                                 </FormGroup>
-                                <p style={{color:'red'}} >{this.state.error}</p>
+                                <div style={{color: 'red'}} > {this.state.errors ? <p>  Error from server please insert Right information and check your Data connection </p> : null } </div>
                                 {/* <select
                                       value={this.state.selector}
                                       onChange={(e) => this.setState({selector: e.target.value})}>

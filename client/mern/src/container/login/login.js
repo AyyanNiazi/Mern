@@ -19,7 +19,7 @@ class Login extends Component {
             pass: '',
             errors: null,
             selector: '',
-            error: ''
+            errors: ''
         }
     }
 
@@ -103,7 +103,7 @@ class Login extends Component {
         })
         .catch(err => {console.log("login sy error", err.message)
         this.setState({
-            error: err.message
+            errors: err.message
         })
     })
         // this.props.login(user, this.props.history);
@@ -128,7 +128,7 @@ class Login extends Component {
                         <Col>
                             <Card body>
                                 <CardHeader className="card-head" >Login</CardHeader>
-                                <Form  noValidate onSubmit={ this.onSubmit} >
+                                <Form  onSubmit={ this.onSubmit} >
                                    
                                     <FormGroup>
                                         <Label for="email">Email</Label>
@@ -151,6 +151,7 @@ class Login extends Component {
                                           })} />
                                               {/* <span className="red-text">{errors.password}</span> */}
                                     </FormGroup>
+                                    <FormGroup> 
                                     <Input type="select"
                                       value={this.state.selector}
                                       onChange={(e) => this.setState({selector: e.target.value})}>
@@ -159,7 +160,8 @@ class Login extends Component {
                                         <option value="student">student</option>
                                         <option value="company">company</option>
                                   </Input>
-                                  <p  style={{color: 'red'}}>{this.state.error}</p>
+                                  </FormGroup>
+                                  <div style={{color: 'red'}} > {this.state.errors ? <p>  Error from server please insert Right information or check your Data connection </p> : null } </div>
                                     {/* {this.state.errors ? ("you entered wrong data" , this.state.errors ): null} */}
                                     <FormGroup>
                                         <Button color="danger" type="submit" className=" button text-right" >Login</Button>

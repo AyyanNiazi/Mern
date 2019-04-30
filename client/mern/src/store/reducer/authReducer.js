@@ -1,7 +1,7 @@
 import React from 'react';
 import {actionTypes} from '../action/actionTypes'
-import isempty from 'is-empty'
-import { stat } from 'fs';
+// import isempty from 'is-empty'
+// import { stat } from 'fs';
 
 const initialState = {
     token: localStorage.getItem('token'),
@@ -45,7 +45,7 @@ export default function (state = initialState, action){
                 isAuth: true,
                 authUser: action.payload
             }
-        // case actionTypes.LOGOUT_SUCCES :
+        case actionTypes.LOGOUT_SUCCES :
         localStorage.removeItem('token');
             return {
                 ...state,

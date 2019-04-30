@@ -45,8 +45,14 @@ class CompanyDashboard extends Component {
             allounce,
             email,
         }
+
         console.log(newjob);
         this.props.newJob(newjob)
+        alert("succesfully submitted job")
+
+        this.setState(prevState => ({
+            modal: !prevState.modal
+        }));
 
 
     }
@@ -65,7 +71,7 @@ class CompanyDashboard extends Component {
                     <ModalHeader toggle={this.toggle}>Post a Job</ModalHeader>
                     <ModalBody>
                         <Card body>
-                            <Form noValidate onSubmit={this.onSubmit} >
+                            <Form  onSubmit={this.onSubmit} >
                                 <FormGroup>
                                     <Label for="title">Title</Label>
                                     <Input type="text" name="title" required
@@ -118,6 +124,8 @@ class CompanyDashboard extends Component {
                                         })} />
                                     {/* <span className="red-text">{errors.password}</span> */}
                                 </FormGroup>
+                                {/* <div style={{color: 'red'}} > {this.state.errors ? <p>  Error from server please insert Right information and check your Data connection </p> : null } </div> */}
+
                                 {/* <select
                                       value={this.state.selector}
                                       onChange={(e) => this.setState({selector: e.target.value})}>

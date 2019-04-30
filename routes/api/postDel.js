@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const User = require('../../models/User');
+const Posted = require('../../models/PostJob');
 
 
 
@@ -12,7 +12,7 @@ router.delete('/', (req, res) => {
 
   console.log(req.body,"ye wala")
     // console.log(req.params.id,"id ")
-    User.findOneAndDelete(email)
+    Posted.findOneAndDelete(email)
       .then(user => {user.remove().then(() => res.json({ success: true,user }))})
       .catch(err => res.status(404).json({ success: false }));
   });

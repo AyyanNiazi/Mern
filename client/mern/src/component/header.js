@@ -1,16 +1,17 @@
     import React,{Component} from 'react';
-    import {Link} from 'react-router-dom';
+    import {Link,NavLink} from 'react-router-dom';
     import Logout from '../container/login/logout';
+    import {logout} from '../store/action/authAction'
     import {connect} from 'react-redux'
-    import CompanyDashboard from './company/companyDashboard'
+import PropTypes from 'prop-types'
+    // import CompanyDashboard from './company/companyDashboard'
     import {
         Collapse,
         Navbar,
         NavbarToggler,
         NavbarBrand,
         Nav,
-        NavItem,
-        NavLink,
+        
         UncontrolledDropdown,
         DropdownToggle,
         DropdownMenu,
@@ -30,7 +31,15 @@
             companies: ''
             };
         }
+        static propTypes = {
+            logout: PropTypes.func.isRequired
+        }
 
+        logout = () => {
+            this.props.logout();
+            // window.location.
+            console.log("logout")
+        }
         componentDidMount(){
             console.log(this.props)
             Axios.get('http://localhost:5000/api/allStudent')
@@ -61,16 +70,17 @@
             const { classes } = this.props;
             return ( 
                 <React.Fragment>
-                    <Navbar color="light" light expand="md">
-                        <NavbarBrand href="/">Mern App</NavbarBrand>
-                        <NavbarToggler onClick={this.toggle} />
-                        <Collapse isOpen={this.state.isOpen} navbar>
-                            <Nav className="ml-auto" navbar>
-                            
+                   
                             
 
                                 {this.props.auth.isAuth === true && this.props.auth.authUser.selector === "student"  ? 
                                 <div>
+                                      <Navbar color="light" light expand="md">
+                                      <h3>  <NavLink to='/studentDashboard' > Student Dashboard </NavLink>  </h3>
+                        <NavbarToggler onClick={this.toggle} />
+                        <Collapse isOpen={this.state.isOpen} navbar>
+                            <Nav className="ml-auto" navbar>
+                            
                                      <UncontrolledDropdown nav inNavbar>
                                     <DropdownToggle nav caret>
                                         Welcome Student
@@ -84,14 +94,23 @@
                                         </DropdownItem>
                                         <DropdownItem divider />
                                         <DropdownItem>
-                                                <Logout />
+                                        <Link to='/login' onClick={this.logout.bind(this)} > Logout </Link>
                                         </DropdownItem>
                                     </DropdownMenu>
                                 </UncontrolledDropdown>
+
+                            </Nav>
+                            </Collapse>
+                            </Navbar>
                             </div> 
                             : 
                             this.props.auth.isAuth === true && this.props.auth.authUser.selector === "company"  ? 
                             <div>
+                                 <Navbar color="light" light expand="md">
+                                 <h3>  <NavLink to='/companyMain' > Company Dashboard </NavLink>  </h3>
+                        <NavbarToggler onClick={this.toggle} />
+                        <Collapse isOpen={this.state.isOpen} navbar>
+                            <Nav className="ml-auto" navbar>
                             <UncontrolledDropdown nav inNavbar>
                            <DropdownToggle nav caret>
                                Welcome Comapny
@@ -108,13 +127,22 @@
                                </DropdownItem>
                                <DropdownItem divider />
                                <DropdownItem>
-                                       <Logout />
+                               <Link to='/login' onClick={ () => this.logout} > Logout </Link>
+                                       
                                </DropdownItem>
                            </DropdownMenu>
                        </UncontrolledDropdown>
+                       </Nav>
+                            </Collapse>
+                            </Navbar>
                    </div> :
                     this.props.auth.isAuth === true && this.props.auth.authUser.user === "admin"  ? 
                     <div>
+                         <Navbar color="light" light expand="md">
+                       <h3>  <NavLink to='/adminDashboard' > Admin dashboard</NavLink>  </h3>
+                        <NavbarToggler onClick={this.toggle} />
+                        <Collapse isOpen={this.state.isOpen} navbar>
+                            <Nav className="ml-auto" navbar>
                     <UncontrolledDropdown nav inNavbar>
                    <DropdownToggle nav caret>
                        Welcome Admin
@@ -131,12 +159,21 @@
                        </DropdownItem>
                        <DropdownItem divider />
                        <DropdownItem>
-                               <Logout />
+                       <Link to='/login' onClick={ () => this.logout} > Logout </Link>
                        </DropdownItem>
                    </DropdownMenu>
                </UncontrolledDropdown>
+               </Nav>
+                            </Collapse>
+                            </Navbar>
                     </div> :
                             <div>
+                                 <Navbar color="light" light expand="md">
+                        <NavbarBrand href="/">Mern App</NavbarBrand>
+                        <NavbarToggler onClick={this.toggle} />
+                        <Collapse isOpen={this.state.isOpen} navbar>
+                            <Nav className="ml-auto" navbar>
+                            
                                     <UncontrolledDropdown nav inNavbar>
                                     <DropdownToggle nav caret>
                                         Authentication
@@ -154,6 +191,9 @@
                                         </DropdownItem> */}
                                     </DropdownMenu>
                                 </UncontrolledDropdown>
+                                </Nav>
+                                </Collapse>
+                                </Navbar>
                                 </div>
                                     }
                                 {/* {this.state.student && this.props.student ?
@@ -182,9 +222,7 @@
                                 */}
 
                                 
-                            </Nav>
-                        </Collapse>
-                    </Navbar>
+                           
                 </React.Fragment>
             );
         }
@@ -199,4 +237,4 @@
         }
     } 
 
-    export default connect(mapstatetoprops,null)(Header);
+    export default connect(mapstatetoprops,{logout})(Header);
