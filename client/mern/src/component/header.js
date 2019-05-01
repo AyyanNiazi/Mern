@@ -46,6 +46,10 @@ import PropTypes from 'prop-types'
             this.props.logout();
             // window.location.
             // localStorage.removeItem('state')
+            this.setState({
+                evein: true
+            })
+            window.location.reload()
             console.log("logout")
         }
         componentDidMount(){

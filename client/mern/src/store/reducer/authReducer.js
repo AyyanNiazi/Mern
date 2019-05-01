@@ -10,6 +10,7 @@ const initialState = {
     loading: false,
     user : null,
     authUser: '',
+    state:''
     
 }
 
@@ -33,11 +34,14 @@ export default function (state = initialState, action){
 
         case actionTypes.REGISTER_SUCCES:
         localStorage.setItem('token', action.payload.token)
+
              return {
             ...state,
             ...action.payload,
             isAuth: true,
             isLoading: false,
+            // state:   localStorage.setItem('state', ...action.payload)
+
         }
        
         case actionTypes.AUTH_ERROR :

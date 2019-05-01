@@ -28,28 +28,40 @@ import { timingSafeEqual } from 'crypto';
 
 class Routes extends Component {
     constructor(props) {
+        let getitem = JSON.parse(localStorage.getItem('state'));
         super(props);
         this.state = { 
             local: false,
             student: false,
             company: false,
             admin: false,
+            evein:false,
+            storage: getitem
          }
 
     }
-
-    componentDidMount(){
+    componentWillReceiveProps(nextprops){
+        console.log(nextprops)
+    }
+     componentDidMount(){
     const getitem = JSON.parse(localStorage.getItem('state'));
+
     try{
     console.log(getitem.authReducer)
+        this.setState({
+            storage: getitem.authReducer.isAuth === true
+        })
 
         const user = getitem.authReducer.isAuth === true;
         const student = getitem.authReducer.authUser.selector === "student"
         const company = getitem.authReducer.authUser.selector === "company"
         const admin = getitem.authReducer.authUser.user === "admin"
-
+        this.setState({
+            user: user
+        })
         // const student = getitem.authReducer.authUser.selector === "student"
         if(user && student){
+            // window.location.reload();
             console.log(getitem.authReducer.isAuth === true);
 
             this.setState({
@@ -87,20 +99,8 @@ class Routes extends Component {
                 console.log(this.props)
             })       
          }
-    else{
-        alert('404')
-    }
-        //  else{
-        //      alert("404 error")
-        //      console.log(this.props)
-            
-        //     //  if(this.state.local === false){
-        //     //     return (
-        //     //         <Redirect to='/login' />
-        //     //     )
-        //     //  }
-
-        //  }
+   
+       
 
     }
    catch(e){
@@ -125,7 +125,7 @@ class Routes extends Component {
             
                 <Router>
                     <Header />
-                    <Switch> 
+
                         {
                             this.state.local === false ?
                             <div>
@@ -149,7 +149,6 @@ class Routes extends Component {
 
                        
                         
-                    </Switch>
                 </Router>
             </React.Fragment>
          );

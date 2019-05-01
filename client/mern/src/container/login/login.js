@@ -17,6 +17,7 @@ class Login extends Component {
         this.state = {
             email: '',
             pass: '',
+            evein: false,
             errors: null,
             selector: '',
             errors: ''
@@ -85,7 +86,7 @@ class Login extends Component {
         .then(res => {
             console.log(res.data.user.selector)
             if( selector === "student"  && res.data.user.selector === "student" ){ 
-              
+               
                 const authUser={user: "user",selector}            
                 this.props.auth(authUser)
 
