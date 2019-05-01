@@ -5,6 +5,7 @@ import {actionTypes} from '../action/actionTypes'
 
 const initialState = {
     token: localStorage.getItem('token'),
+    remove: '',
     isAuth: false ,
     loading: false,
     user : null,
@@ -14,6 +15,7 @@ const initialState = {
 
 export default function (state = initialState, action){
 
+    // let remover = localStorage.clear()
     switch(action.type){
         case actionTypes.USER_LOADING : 
         return {
@@ -46,14 +48,17 @@ export default function (state = initialState, action){
                 authUser: action.payload
             }
         case actionTypes.LOGOUT_SUCCES :
-        localStorage.removeItem('token');
+        localStorage.removeItem('state');
+        console.log("reducers sy")
             return {
                 ...state,
                 token: null,
                 user: null,
                 isAuth: false,
                 isLoading: false,
-                authUser: ''
+                authUser: '',
+                remove: localStorage.clear()
+
             }
 
         default: return state

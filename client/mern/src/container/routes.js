@@ -1,5 +1,6 @@
 import React,{Component} from 'react';
 import {BrowserRouter as Router,
+    Redirect,
 Route, Link,Switch} from 'react-router-dom'
 // import jwt_decode from "jwt-decode";
 // import setAuthToken from "../utilities/setAuthToken";
@@ -22,53 +23,132 @@ import AllCompany from '../component/admin/allCompany'
 import Companies from '../component/student/companies'
 import AdminDashboard from '../component/admin/adminDashboard';
 import privateRoute from './privateRoute';
+import { timingSafeEqual } from 'crypto';
 
-// if (localStorage.jwtToken) {
-//     // Set auth token header auth
-//     const token = localStorage.jwtToken;
-//     setAuthToken(token);
-//     // Decode token and get user info and exp
-//     const decoded = jwt_decode(token);
-//     // Set user and isAuthenticated
-//     store.dispatch(setCurrentUser(decoded));
-//   // Check for expired token
-//     const currentTime = Date.now() / 1000; // to get in milliseconds
-//     if (decoded.exp < currentTime) {
-//       // Logout user
-//       store.dispatch(logout());
-//       // Redirect to login
-//       window.location.href = "./login";
-//     }
-//   }
 
 class Routes extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = { 
+            local: false,
+            student: false,
+            company: false,
+            admin: false,
+         }
 
     }
+
+    componentDidMount(){
+    const getitem = JSON.parse(localStorage.getItem('state'));
+    try{
+    console.log(getitem.authReducer)
+
+        const user = getitem.authReducer.isAuth === true;
+        const student = getitem.authReducer.authUser.selector === "student"
+        const company = getitem.authReducer.authUser.selector === "company"
+        const admin = getitem.authReducer.authUser.user === "admin"
+
+        // const student = getitem.authReducer.authUser.selector === "student"
+        if(user && student){
+            console.log(getitem.authReducer.isAuth === true);
+
+            this.setState({
+                local: true,
+                student: true,
+            },() => {
+                // localStorage.setItem('path',window.location.pathname);
+                // this.props.history.replace('/studentDashboard')
+                console.log(this.state);
+                return (
+                    <Redirect to='/studentDashboard' />)
+            })
+           console.log(this.state.local)
+            
+        }
+
+        else if (user && company){
+            this.setState({
+                local: true,
+                redirect: true,
+            },() => {
+                // localStorage.setItem('path',window.location.pathname);
+                // this.props.history.replace('/studentDashboard')
+                console.log(this.props)
+            })       
+         }
+
+         else if (user && admin){
+            this.setState({
+                local: true,
+                redirect: true,
+            },() => {
+                // localStorage.setItem('path',window.location.pathname);
+                // this.props.history.replace('/studentDashboard')
+                console.log(this.props)
+            })       
+         }
+    else{
+        alert('404')
+    }
+        //  else{
+        //      alert("404 error")
+        //      console.log(this.props)
+            
+        //     //  if(this.state.local === false){
+        //     //     return (
+        //     //         <Redirect to='/login' />
+        //     //     )
+        //     //  }
+
+        //  }
+
+    }
+   catch(e){
+       console.log(e)
+   }
+
+   console.log(this.props)
+       
+        
+    }
+    
     render() { 
+        const {student,local,company,admin} = this.state
+        // if(student && local){
+        //     return (
+        //         <Redirect to='/studentDashboard' />
+        //     )
+        // }
+
         return ( 
             <React.Fragment>
             
                 <Router>
                     <Header />
                     <Switch> 
-                        {/* <Route exact path='/' component={Landing}  /> */}
-                        <Route exact path='/login' component={Login}  />
-                        <Route exact path='/' component={Register}  />
-                        {/* <PrivateRoute exact path="/dashboard" component={Dashboard} /> */}
-                        <PrivateRoute exact path="/studentDashboard" component={StudentDashboard} />
-                        <AdminRoute exact path="/adminDashboard" component={AdminDashboard} />
-                        {/* <Route exact path="/studentDashboard" component={StudentDashboard} /> */}
-                        <PrivateRoute exact path="/companyDashboard" component={CompanyDashboard} />
-                        <PrivateRoute exact path="/forCompany" component={ForCompany} />
-                        <PrivateRoute exact path="/companyMain" component={CompanyMain} />
-                        <PrivateRoute exact path="/allJob" component={AllJobs} />
-                        <PrivateRoute exact path="/allStudent" component={AllStudent} />
-                        <PrivateRoute exact path="/allCompany" component={AllCompany} />
-                        <PrivateRoute exact path="/companies" component={Companies} />
-                        <PrivateRoute exact path="/postedJob" component={PostedJob} />
+                        {
+                            this.state.local === false ?
+                            <div>
+                            <Route exact path='/login' component={Login}   />
+                            <Route exact path='/' component={Register}  />
+                            </div>
+                            :
+                            <div> 
+                            <Route exact path="/studentDashboard" component={StudentDashboard} />
+                        <Route exact path="/adminDashboard" component={AdminDashboard} />
+                        <Route exact path="/companyDashboard" component={CompanyDashboard} />
+                        <Route exact path="/forCompany" component={ForCompany} />
+                        <Route exact path="/companyMain" component={CompanyMain} />
+                        <Route exact path="/allJob" component={AllJobs} />
+                        <Route exact path="/allStudent" component={AllStudent} />
+                        <Route exact path="/allCompany" component={AllCompany} />
+                        <Route exact path="/companies" component={Companies} />
+                        <Route exact path="/postedJob" component={PostedJob} />
+                        </div>
+                        }
+
+                       
+                        
                     </Switch>
                 </Router>
             </React.Fragment>

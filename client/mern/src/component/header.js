@@ -26,9 +26,16 @@ import PropTypes from 'prop-types'
         
             this.toggle = this.toggle.bind(this);
             this.state = {
+            isAuth: '',
+            user: '',
             isOpen: false,
             student:'',
-            companies: ''
+            localstudent:'',
+            localcompany: '',
+            company: '',
+            companies: '',
+            evein: false,
+            admin:'',
             };
         }
         static propTypes = {
@@ -38,9 +45,11 @@ import PropTypes from 'prop-types'
         logout = () => {
             this.props.logout();
             // window.location.
+            // localStorage.removeItem('state')
             console.log("logout")
         }
         componentDidMount(){
+            const {company,student,isAuth} = this.state
             console.log(this.props)
             Axios.get('http://localhost:5000/api/allStudent')
             .then(res => {
@@ -58,6 +67,35 @@ import PropTypes from 'prop-types'
                     })
             })
             .catch(err => console.log("headers sy error", err.message))
+
+        const getitem = JSON.parse(localStorage.getItem('state'));
+        try{
+            const user = getitem.authReducer.isAuth === true;
+            const student = getitem.authReducer.authUser.selector === "student"
+            const company = getitem.authReducer.authUser.selector === "company"
+            const admin = getitem.authReducer.authUser.user === "admin"
+            console.log(admin)
+            this.setState({
+                isAuth: user,
+                localstudent:student,
+                localcompany:company,
+                admin: admin
+            })
+        }
+        catch(e){
+            console.log(e.message);
+        }
+            
+        console.log (this.props)
+        // try{
+        //     if(!this.state.local === "")
+        //     this.setState({
+        //         storage: JSON.parse(localStorage.getItem('state')),
+        //     })
+        // }
+        // catch(e){
+        //     console.log(e.message)
+        // }
         }
 
 
@@ -67,13 +105,18 @@ import PropTypes from 'prop-types'
             });
         }
         render(props) { 
-            const { classes } = this.props;
+            const { storage } = this.state
             return ( 
-                <React.Fragment>
+                <div>
                    
                             
 
-                                {this.props.auth.isAuth === true && this.props.auth.authUser.selector === "student"  ? 
+                                { this.props.auth.isAuth === true && this.props.auth.authUser.selector === "student"
+                                ||
+                               
+                                this.state.localstudent && this.state.isAuth                                
+                               
+                                    ? 
                                 <div>
                                       <Navbar color="light" light expand="md">
                                       <h3>  <NavLink to='/studentDashboard' > Student Dashboard </NavLink>  </h3>
@@ -104,7 +147,11 @@ import PropTypes from 'prop-types'
                             </Navbar>
                             </div> 
                             : 
-                            this.props.auth.isAuth === true && this.props.auth.authUser.selector === "company"  ? 
+                            this.props.auth.isAuth === true && this.props.auth.authUser.selector === "company" 
+                            ||
+                               
+                                this.state.localcompany && this.state.isAuth                                
+                                ? 
                             <div>
                                  <Navbar color="light" light expand="md">
                                  <h3>  <NavLink to='/companyMain' > Company Dashboard </NavLink>  </h3>
@@ -127,16 +174,18 @@ import PropTypes from 'prop-types'
                                </DropdownItem>
                                <DropdownItem divider />
                                <DropdownItem>
-                               <Link to='/login' onClick={ () => this.logout} > Logout </Link>
-                                       
-                               </DropdownItem>
+                                        <Link to='/login' onClick={this.logout.bind(this)} > Logout </Link>
+                                        </DropdownItem>
                            </DropdownMenu>
                        </UncontrolledDropdown>
                        </Nav>
                             </Collapse>
                             </Navbar>
                    </div> :
-                    this.props.auth.isAuth === true && this.props.auth.authUser.user === "admin"  ? 
+                    
+                    
+                               
+                    this.state.isAuth                                  ? 
                     <div>
                          <Navbar color="light" light expand="md">
                        <h3>  <NavLink to='/adminDashboard' > Admin dashboard</NavLink>  </h3>
@@ -159,8 +208,8 @@ import PropTypes from 'prop-types'
                        </DropdownItem>
                        <DropdownItem divider />
                        <DropdownItem>
-                       <Link to='/login' onClick={ () => this.logout} > Logout </Link>
-                       </DropdownItem>
+                                        <Link to='/login' onClick={this.logout.bind(this)} > Logout </Link>
+                                        </DropdownItem>
                    </DropdownMenu>
                </UncontrolledDropdown>
                </Nav>
@@ -223,7 +272,7 @@ import PropTypes from 'prop-types'
 
                                 
                            
-                </React.Fragment>
+                </div>
             );
         }
     }

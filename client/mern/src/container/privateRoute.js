@@ -6,6 +6,8 @@ import { stat } from 'fs';
 
 
 const PrivateRoute = ({ component: Component, auth, ...rest}) => ( 
+
+    
     <Route 
         {...rest}
         render=

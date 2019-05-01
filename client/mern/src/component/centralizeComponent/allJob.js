@@ -73,23 +73,29 @@ console.log("job [pos", postedJob)
         axios.post('/api/postJob', postedJob)
         .then(res => {
             console.log(res,"response post wala");
-            this.setState({
-                // modal: !true
-            })
+            this.setState(prevState => ({
+                modal: !prevState.modal,
+                // id:ids,
+    
+            }));
             alert("your jon submited succesfully")
         })
         .catch(err => {
             this.setState({
                 errors: err.message
             })
+            console.log(err)
         })
-        alert("sucessfuly applied")
-        this.setState(prevState => ({
-            modal: !prevState.modal,
-            // id:ids,
-
-        }));
-
+        // alert("sucessfuly applied")
+       
+        this.setState({
+            name:'',
+            email: '',
+            education: '',
+            socialMediaProfile:'',
+            workingProfile:'',
+            errors: ''
+        })
     }
     
 
@@ -204,7 +210,7 @@ console.log("job [pos", postedJob)
                                        
                                     {/* <span className="red-text">{errors.password}</span> */}
                                 </FormGroup>
-                                <div style={{color: 'red'}} > {this.state.errors ? <p>  Error from server please insert Right information and check your Data connection </p> : null } </div>
+                                <div style={{color: 'red'}} > {this.state.errors ? <p>  Error from server please insert Right information and check your Data connection, or may be you are  applying again  </p> : null } </div>
                                 {/* <select
                                       value={this.state.selector}
                                       onChange={(e) => this.setState({selector: e.target.value})}>
@@ -214,7 +220,7 @@ console.log("job [pos", postedJob)
                                         <option value="company">company</option>
                                   </select> */}
 {/* <p>{elem._id}</p> */}
-                                {/* {this.state.errors ? ("you entered wrong data" , this.state.errors ): null} */}
+                              {/* <p>   {this.state.errors ? ("you entered wrong data" , this.state.errors ): null}</p> */}
                                 <FormGroup>
                                     <Button color="primary"  type="submit" className=" button text-right" >Submit</Button>
                                 </FormGroup>

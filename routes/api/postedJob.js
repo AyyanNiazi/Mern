@@ -5,10 +5,9 @@ const Posted = require('../../models/PostJob')
 
 router.post('/', (req,res) => {
     
-    const {workingProfile,socialMediaProfile,education,name,email,id}  = req.body
-    
-    console.log(id, "iddd abhi wali")
-
+    let {workingProfile,socialMediaProfile,education,name,email,id}  = req.body
+ 
+    console.log(id , "iddd abhi wali")
     if(!education || !email || !name){
         return res.status(400).json("register error")
     }
@@ -28,7 +27,8 @@ router.post('/', (req,res) => {
         console.log("posted job ", newPost);
         newPost.save()
         .then(res => console.log(res,"respnse new job post wala server database sy"))
-        .catch(err => console.log(err.message,"job post ka error"))
+        .catch(err => res.status(400).json({ success: false,err }));
+    
     } )
     .catch(err => console.log("new job ka error", err.message))
 } )
