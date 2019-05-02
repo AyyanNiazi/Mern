@@ -1,7 +1,8 @@
 import React,{Component} from 'react';
 import {BrowserRouter as Router,
-    Redirect,
-Route, Switch} from 'react-router-dom'
+    Redirect,Link,
+Route, Switch} from 'react-router-dom';
+import { Spinner } from 'reactstrap'
 import {connect} from 'react-redux'
 import Header from '../component/header';
 // import Landing from '../component/dashbaoard';
@@ -19,7 +20,7 @@ import AllStudent from '../component/admin/allStudent'
 import AllCompany from '../component/admin/allCompany'
 import Companies from '../component/student/companies'
 import AdminDashboard from '../component/admin/adminDashboard';
-import privateRoute from './privateRoute';
+import Authorized from './authorized';
 import { timingSafeEqual } from 'crypto';
 
 
@@ -34,7 +35,9 @@ class Routes extends Component {
             admin: false,
             evein:false,
             storage: getitem,
-            auth: false
+            auth: false,
+            authorized: false,
+            loading: true,
          }
 
     }
@@ -81,7 +84,8 @@ class Routes extends Component {
             this.setState({
                 local: true,
                 student: true,
-                auth: true
+                auth: true,
+                authorized: true
             });
             
         }
@@ -90,7 +94,9 @@ class Routes extends Component {
             this.setState({
                 local: true,
                 redirect: true,
-                auth: true
+                auth: true,
+                authorized: true
+
             })       
          }
 
@@ -99,8 +105,13 @@ class Routes extends Component {
                 local: true,
                 redirect: true,
                 auth: true,
+                authorized: true
             })       
          }
+         else{
+            this.props.history.replace('/login');
+         }
+             
    
        
 
@@ -112,6 +123,22 @@ class Routes extends Component {
     }
 
      componentDidMount(){
+        this.setState({
+            loading: false
+        })
+
+         if(this.state.auth === false && this.state.local === false){
+            this.setState({
+                authorized: true,
+            })
+         }
+         else 
+        //  else{
+        //      this.setState({
+        //         authorized: false,
+
+        //      })
+        //  }
     this.uploader()
    console.log(this.props);
    
@@ -120,21 +147,31 @@ class Routes extends Component {
     }
     
     render() { 
-        const {student,local,company,admin} = this.state
-        // if(student && local){
+        const {authorized,local,company,admin} = this.state
+        // if(authorized === false){
         //     return (
-        //         <Redirect to='/studentDashboard' />
+        //         <Router> 
+        //             <Redirect to='/authorized' />
+
+        //         </Router>
         //     )
         // }
         console.log(this.state.local)
         console.log(this.state.auth)
         return ( 
+            this.state.loading === true ?
+            <Spinner  style={{marginLeft: "50%", marginTop: "25%"}} color='info' />
+            :
+            this.state.authorized === false ?
+             <h1>Your are not authorized for this page</h1>
+              : 
             <React.Fragment>
             
                 <Router>
                     <Header />
 
-                        {   this.state.auth === false &&
+                        {  
+                            this.state.auth === false &&
                             this.state.local === false ?
                             <div>
                             <Route exact path='/login' component={Login}   />
@@ -152,13 +189,16 @@ class Routes extends Component {
                         <Route exact path="/allCompany" component={AllCompany} />
                         <Route exact path="/companies" component={Companies} />
                         <Route exact path="/postedJob" component={PostedJob} />
-                        </div>
+                        </div> 
+
                         }
 
                        
                         
                 </Router>
-            </React.Fragment>
+            </React.Fragment> 
+
+            
          );
     }
 }
