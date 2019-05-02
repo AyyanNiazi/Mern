@@ -12,11 +12,22 @@ class AllStudent extends Component {
             studentData: [],
             loading: true,
             evein: false,
+            admin:''
             
          }
     }
 
     componentDidMount(){
+        const getitem = JSON.parse(localStorage.getItem('state'))
+        try{
+            const admin = getitem.authReducer.authUser.user === "admin"
+            this.setState({
+                admin
+            })
+        }   
+        catch(e){
+            console.log(e)
+        }
         axios.get('http://localhost:5000/api/allStudent')
         .then(res => {
             const student = res.data.filter(e => {
@@ -75,7 +86,7 @@ class AllStudent extends Component {
                                 <p> name: {elem.name}</p>
                                 <p> email:  {elem.email}</p>
                                 <p> user Type:   {elem.userType}</p>
-                                {this.props.auth.authUser.user === "admin" ? 
+                                {this.props.auth.authUser.user === "admin" || this.state.admin ? 
                                     <Button color='danger' onClick={this.delete.bind(this, elem.email, index)} > Delete </Button> : null}
                                 </Jumbotron>
                         )

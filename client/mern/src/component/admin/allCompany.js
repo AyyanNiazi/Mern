@@ -11,7 +11,8 @@ class AllCompany extends Component {
             companyData: [],
             studentData: [],
             loading: true,
-            evein: true
+            evein: true,
+            admin: ''
 
 
         }
@@ -19,6 +20,17 @@ class AllCompany extends Component {
 
 
     componentDidMount() {
+        const getitem = JSON.parse(localStorage.getItem('state'))
+        try{
+            const admin = getitem.authReducer.authUser.user === "admin"
+            this.setState({
+                admin
+            })
+        }   
+        catch(e){
+            console.log(e)
+        }
+
         axios.get('http://localhost:5000/api/allCompany')
             .then(res => {
                 const company = res.data.filter(e => {
@@ -82,8 +94,11 @@ class AllCompany extends Component {
                                     <p> name: {elem.name}</p>
                                     <p> email:  {elem.email}</p>
                                     {/* <p> user Type:   {elem.userType}</p> */}
-                                    {this.props.auth.authUser.user === "admin" ? 
-                                    <Button color='danger' onClick={this.delete.bind(this, elem.email, index)} > Delete </Button> : null}
+                                    {this.props.auth.authUser.user === "admin"
+                                    ||
+                                    this.state.admin ? 
+                                    <Button color='danger' onClick={this.delete.bind(this, elem.email, index)} > Delete </Button> 
+                                    : null}
                                 </Jumbotron>
                             )
                             // })

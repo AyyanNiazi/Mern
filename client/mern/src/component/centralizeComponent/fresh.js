@@ -11,7 +11,8 @@ class PostedJob extends Component {
             companyData: [],
             studentData: [],
             loading: true,
-            evein: true
+            evein: true,
+            admin: ''
 
 
         }
@@ -19,6 +20,16 @@ class PostedJob extends Component {
 
 
     componentDidMount() {
+        const getitem = JSON.parse(localStorage.getItem('state'))
+        try{
+            const admin = getitem.authReducer.authUser.user === "admin"
+            this.setState({
+                admin
+            })
+        }   
+        catch(e){
+            console.log(e)
+        }
         axios.get('http://localhost:5000/api/allPostJob')
             .then(res => {
                 // const company = res.data.filter(e => {
@@ -30,7 +41,9 @@ class PostedJob extends Component {
                     loading: false
                 })
 
-                console.log(res, "response")
+                console.log(res, "response");
+                console.log(this.props, "props");
+
                 // const student = res.data.filter(e => {
                 //     return e.userType === "student"
                 // })
@@ -84,7 +97,8 @@ class PostedJob extends Component {
                                     <p> Education:   {elem.education}</p>
                                     <p> Social media profile:   {elem.socialMediaProfile}</p>
                                     <p> working profile:   {elem.workingProfile}</p>
-                                    {this.props.auth.authUser.user === "admin" ?
+                                    {    this.props.auth.authUser.user === "admin" ||
+                                        this.state.admin ?
                                     <Button color='danger' onClick={this.delete.bind(this, elem.email, index)} > Delete </Button> 
                                 :
                                 <Button color='primary' type="button" > Select Studentlo </Button> 

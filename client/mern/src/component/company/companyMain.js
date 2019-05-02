@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 // import {Link} from 'react-router-dom';
-import { Jumbotron } from 'reactstrap';
+import { Jumbotron,Spinner } from 'reactstrap';
 
 
 class CompanyJob extends Component {
@@ -11,11 +11,19 @@ class CompanyJob extends Component {
             descrip: '',
             salary: '',
             title:'',
+            loading: true
          }
     }
-
+    componentDidMount() {
+        this.setState({
+            loading: false
+        })
+    }
     render() { 
         return ( 
+            this.state.loading === true ?
+            <Spinner style={{marginLeft: "50%", marginTop: "25%"}} color='info'/>
+            :
             <React.Fragment>
                   <Jumbotron>
                

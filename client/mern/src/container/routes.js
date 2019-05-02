@@ -1,11 +1,8 @@
 import React,{Component} from 'react';
 import {BrowserRouter as Router,
     Redirect,
-Route, Link,Switch} from 'react-router-dom'
-// import jwt_decode from "jwt-decode";
-// import setAuthToken from "../utilities/setAuthToken";
-// import { setCurrentUser, logout } from "../store/action/authAction";
-// import store from '../store/index'
+Route, Switch} from 'react-router-dom'
+import {connect} from 'react-redux'
 import Header from '../component/header';
 // import Landing from '../component/dashbaoard';
 import Register from './login/register'
@@ -36,22 +33,38 @@ class Routes extends Component {
             company: false,
             admin: false,
             evein:false,
-            storage: getitem
+            storage: getitem,
+            auth: false
          }
 
     }
-    componentWillReceiveProps(nextprops){
-        console.log(nextprops)
+    //WARNING! To be deprecated in React v17. Use new lifecycle static getDerivedStateFromProps instead.
+     componentWillReceiveProps(nextProps) {
+        console.log(nextProps.auth.isAuth);
+        if(nextProps.auth.isAuth === true){
+            this.setState({
+                auth: true,
+                local: true
+            })
+        }
+        else if(nextProps.auth.isAuth === false){
+            this.setState({
+                auth: false,
+                local: false
+            })
+        }
     }
-     componentDidMount(){
-    const getitem = JSON.parse(localStorage.getItem('state'));
+    uploader(){
+        const getitem = JSON.parse(localStorage.getItem('state'));
+        // if(this.state.auth === false){
+        //     this.setState({
+        //         local: false
+        //     })
+        // }
 
     try{
     console.log(getitem.authReducer)
-        this.setState({
-            storage: getitem.authReducer.isAuth === true
-        })
-
+       
         const user = getitem.authReducer.isAuth === true;
         const student = getitem.authReducer.authUser.selector === "student"
         const company = getitem.authReducer.authUser.selector === "company"
@@ -59,6 +72,7 @@ class Routes extends Component {
         this.setState({
             user: user
         })
+        console.log("andar sy solve ")
         // const student = getitem.authReducer.authUser.selector === "student"
         if(user && student){
             // window.location.reload();
@@ -67,14 +81,8 @@ class Routes extends Component {
             this.setState({
                 local: true,
                 student: true,
-            },() => {
-                // localStorage.setItem('path',window.location.pathname);
-                // this.props.history.replace('/studentDashboard')
-                console.log(this.state);
-                return (
-                    <Redirect to='/studentDashboard' />)
-            })
-           console.log(this.state.local)
+                auth: true
+            });
             
         }
 
@@ -82,10 +90,7 @@ class Routes extends Component {
             this.setState({
                 local: true,
                 redirect: true,
-            },() => {
-                // localStorage.setItem('path',window.location.pathname);
-                // this.props.history.replace('/studentDashboard')
-                console.log(this.props)
+                auth: true
             })       
          }
 
@@ -93,10 +98,7 @@ class Routes extends Component {
             this.setState({
                 local: true,
                 redirect: true,
-            },() => {
-                // localStorage.setItem('path',window.location.pathname);
-                // this.props.history.replace('/studentDashboard')
-                console.log(this.props)
+                auth: true,
             })       
          }
    
@@ -107,7 +109,12 @@ class Routes extends Component {
        console.log(e)
    }
 
-   console.log(this.props)
+    }
+
+     componentDidMount(){
+    this.uploader()
+   console.log(this.props);
+   
        
         
     }
@@ -119,14 +126,15 @@ class Routes extends Component {
         //         <Redirect to='/studentDashboard' />
         //     )
         // }
-
+        console.log(this.state.local)
+        console.log(this.state.auth)
         return ( 
             <React.Fragment>
             
                 <Router>
                     <Header />
 
-                        {
+                        {   this.state.auth === false &&
                             this.state.local === false ?
                             <div>
                             <Route exact path='/login' component={Login}   />
@@ -155,4 +163,10 @@ class Routes extends Component {
     }
 }
  
-export default Routes;
+//redux
+const mapstatetoprops    = state => {
+     return {
+        auth: state.authReducer,
+     }
+ }
+export default connect(mapstatetoprops,null)(Routes);

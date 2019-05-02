@@ -36,23 +36,66 @@ import PropTypes from 'prop-types'
             companies: '',
             evein: false,
             admin:'',
+            auth: false
             };
         }
         static propTypes = {
             logout: PropTypes.func.isRequired
         }
 
+        //WARNING! To be deprecated in React v17. Use new lifecycle static getDerivedStateFromProps instead.
+        // componentWillReceiveProps(nextProps) {
+        //     console.log(nextProps.auth.isAuth);
+        //     if(nextProps.auth.isAuth === false){
+        //         this.setState({
+        //             auth: true
+        //         })
+        //     }
+        // }
+
         logout = () => {
             this.props.logout();
-            // window.location.
+            // window.location.reload()
             // localStorage.removeItem('state')
+            this.setState({
+                localstudent: '',
+                isAuth: false,
+                
+            })
+            // window.location.reload()
+            console.log("logout")
+        }
+        uploader = () => {
+            const getitem = JSON.parse(localStorage.getItem('state'));
+            try{
+                const user = getitem.authReducer.isAuth === true;
+                const student = getitem.authReducer.authUser.selector === "student"
+                const company = getitem.authReducer.authUser.selector === "company"
+                const admin = getitem.authReducer.authUser.user === "admin"
+                console.log(admin)
+                this.setState({
+                    isAuth: user,
+                    localstudent:student,
+                    localcompany:company,
+                    admin
+                })
+            }
+            catch(e){
+                console.log(e.message);
+            }
+        }
+        componentWillMount(){
+        this.uploader()
             this.setState({
                 evein: true
             })
-            window.location.reload()
-            console.log("logout")
         }
         componentDidMount(){
+            // this.uploader()
+            
+                
+            console.log (this.state)
+
             const {company,student,isAuth} = this.state
             console.log(this.props)
             Axios.get('http://localhost:5000/api/allStudent')
@@ -72,25 +115,7 @@ import PropTypes from 'prop-types'
             })
             .catch(err => console.log("headers sy error", err.message))
 
-        const getitem = JSON.parse(localStorage.getItem('state'));
-        try{
-            const user = getitem.authReducer.isAuth === true;
-            const student = getitem.authReducer.authUser.selector === "student"
-            const company = getitem.authReducer.authUser.selector === "company"
-            const admin = getitem.authReducer.authUser.user === "admin"
-            console.log(admin)
-            this.setState({
-                isAuth: user,
-                localstudent:student,
-                localcompany:company,
-                admin: admin
-            })
-        }
-        catch(e){
-            console.log(e.message);
-        }
-            
-        console.log (this.props)
+    
         // try{
         //     if(!this.state.local === "")
         //     this.setState({
@@ -110,6 +135,7 @@ import PropTypes from 'prop-types'
         }
         render(props) { 
             const { storage } = this.state
+            console.log(this.state.localstudent, this.state.isAuth)
             return ( 
                 <div>
                    
@@ -185,11 +211,8 @@ import PropTypes from 'prop-types'
                        </Nav>
                             </Collapse>
                             </Navbar>
-                   </div> :
-                    
-                    
-                               
-                    this.state.isAuth                                  ? 
+                   </div> : this.props.auth.isAuth === true ||
+                    this.state.isAuth && this.state.admin    ? 
                     <div>
                          <Navbar color="light" light expand="md">
                        <h3>  <NavLink to='/adminDashboard' > Admin dashboard</NavLink>  </h3>
@@ -212,8 +235,8 @@ import PropTypes from 'prop-types'
                        </DropdownItem>
                        <DropdownItem divider />
                        <DropdownItem>
-                                        <Link to='/login' onClick={this.logout.bind(this)} > Logout </Link>
-                                        </DropdownItem>
+                                   <Link to='/login' onClick={this.logout.bind(this)} > Logout </Link>
+                        </DropdownItem>
                    </DropdownMenu>
                </UncontrolledDropdown>
                </Nav>

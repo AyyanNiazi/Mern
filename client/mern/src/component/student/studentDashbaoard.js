@@ -7,7 +7,7 @@ import { newJob } from '../../store/action/companyAction'
 import {
     // Button, Form, FormGroup, Label, Input, CardHeader, Card,
     // Modal, ModalHeader, ModalBody, ModalFooter,Table
-    Jumbotron
+    Jumbotron, Spinner
 } from 'reactstrap';
 
 
@@ -24,12 +24,17 @@ class StudentDashboard extends Component {
             name: 'student',
             email: 'student@gmail.com',
             socialProfile: '',
+            loading: true
 
         };
 
     }
    
-
+componentDidMount(){
+    this.setState({
+        loading: false
+    })
+}
     // onSubmit = e => {
     //     e.preventDefault();
     //     const { title, salary, descrip, allounce } = this.state
@@ -52,6 +57,9 @@ class StudentDashboard extends Component {
     render() {
         const { title, salary, descrip, allounce } = this.state
         return (
+            this.state.loading === true ?
+            <Spinner style={{marginLeft: "50%", marginTop: "25%"}} color='info'/>
+            :
             <div  >
              <Jumbotron>
                

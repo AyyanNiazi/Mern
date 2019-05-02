@@ -20,25 +20,29 @@ class Login extends Component {
             evein: false,
             errors: null,
             selector: '',
-            errors: ''
+            errors: '',
+            auth: false
         }
     }
 
-    componentDidUpdate(prevProps){
-        const {errors} = this.props; //this is coming from store reducer
-        if(errors !== prevProps.errors){
-            if(errors.id === 'LOGIN_FAIL'){
-                this.setState({
-                    errors:errors.msg.msg
-                })
-            }
-            else{
-                this.setState({
-                    errors:null
-                })
-            }
-        }
-    }
+    // componentDidUpdate(prevProps){
+    //     const {errors} = this.props; //this is coming from store reducer
+    //     if(errors !== prevProps.errors){
+    //         if(errors.id === 'LOGIN_FAIL'){
+    //             this.setState({
+    //                 errors:errors.msg.msg
+    //             })
+    //         }
+    //         else{
+    //             this.setState({
+    //                 errors:null
+    //             })
+    //         }
+    //     }
+    // }
+
+   
+
     static propTypes = {
         isAuth: PropTypes.bool,
         errors: PropTypes.object.isRequired,
@@ -49,13 +53,26 @@ class Login extends Component {
     onChange= (e) => {
         this.setState({ [e.target.id]: e.target.value  })
     }
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.errors) {
-          this.setState({
-            errors: nextProps.errors
-          });
-        }
-      }
+    // componentWillReceiveProps(nextProps) {
+    //     // if (nextProps.errors) {
+    //     //   this.setState({
+    //     //     errors: nextProps.errors
+    //     //   });
+    //     // }
+
+    //     console.log(nextProps.auth.isAuth);
+    //     if(nextProps.auth.isAuth === false){
+    //         this.setState({
+    //            auth: true
+    //         })
+    //     }
+    //   }
+
+    //   componentDidMount(){
+    //     this.setState({
+    //         auth: true
+    //      })
+    //   }
     onSubmit = e => {
         const {pass,email,selector} = this.state
         e.preventDefault();
@@ -98,6 +115,11 @@ class Login extends Component {
          console.log(this.props.auth(authUser))
             this.props.history.push('/companyMain');
                 
+            }
+            else{
+                this.setState({
+                    errors: "Please Select valid user type"
+                })
             }
             console.log(res.data.student)
             // this.props.auth()
